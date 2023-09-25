@@ -3,8 +3,6 @@ package com.toggn.mma.notice.domain;
 import com.toggn.mma.enterprise.domain.BusinessCode;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
-
 @Entity
 public class Notice {
 
@@ -51,12 +49,6 @@ public class Notice {
     @Column(nullable = false)
     private Long noticeNumber;
 
-    @Column(nullable = false)
-    private LocalDate createdDate;
-
-    @Column(nullable = false)
-    private LocalDate updatedDate;
-
-    @Column(nullable = false)
-    private LocalDate deadlineDate;
+    @Embedded
+    private NoticeDate noticeDate;
 }
