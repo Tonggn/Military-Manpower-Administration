@@ -1,6 +1,7 @@
 package com.toggn.mma.enterprise.utils;
 
-import com.toggn.mma.enterprise.utils.dto.EnterpriseParseResponse;
+import com.toggn.mma.itp.enterprise.parser.EnterpriseParser;
+import com.toggn.mma.itp.enterprise.parser.dto.EnterpriseParseResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;

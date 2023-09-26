@@ -1,4 +1,4 @@
-package com.toggn.mma.enterprise.utils.dto;
+package com.toggn.mma.itp.enterprise.parser.dto;
 
 public record EnterpriseParseResponse(
         String name,

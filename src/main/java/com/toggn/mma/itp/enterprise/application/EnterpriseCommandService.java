@@ -1,11 +1,12 @@
-package com.toggn.mma.enterprise.application;
+package com.toggn.mma.itp.enterprise.application;
 
-import com.toggn.mma.enterprise.domain.BusinessCode;
-import com.toggn.mma.enterprise.domain.Enterprise;
-import com.toggn.mma.enterprise.domain.EnterpriseScaleCode;
-import com.toggn.mma.enterprise.domain.repository.EnterpriseRepository;
-import com.toggn.mma.enterprise.utils.EnterpriseParser;
-import com.toggn.mma.enterprise.utils.dto.EnterpriseParseResponse;
+import com.toggn.mma.itp.OpenAPIRequestClient;
+import com.toggn.mma.itp.enterprise.domain.BusinessCode;
+import com.toggn.mma.itp.enterprise.domain.Enterprise;
+import com.toggn.mma.itp.enterprise.domain.EnterpriseScaleCode;
+import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
+import com.toggn.mma.itp.enterprise.parser.EnterpriseParser;
+import com.toggn.mma.itp.enterprise.parser.dto.EnterpriseParseResponse;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.springframework.scheduling.annotation.Scheduled;

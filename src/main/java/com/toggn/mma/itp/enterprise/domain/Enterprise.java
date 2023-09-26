@@ -1,4 +1,4 @@
-package com.toggn.mma.enterprise.domain;
+package com.toggn.mma.itp.enterprise.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

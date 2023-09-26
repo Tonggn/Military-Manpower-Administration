@@ -1,11 +1,12 @@
 package com.toggn.mma.enterprise.domain;
 
+import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
-import static com.toggn.mma.enterprise.domain.BusinessCode.CODE_NOT_EXISTS;
+import static com.toggn.mma.itp.enterprise.domain.BusinessCode.CODE_NOT_EXISTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BusinessCodeTest {

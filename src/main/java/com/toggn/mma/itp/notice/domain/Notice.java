@@ -1,6 +1,6 @@
-package com.toggn.mma.notice.domain;
+package com.toggn.mma.itp.notice.domain;
 
-import com.toggn.mma.enterprise.domain.BusinessCode;
+import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import jakarta.persistence.*;
 
 @Entity

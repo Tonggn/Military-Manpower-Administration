@@ -1,4 +1,4 @@
-package com.toggn.mma.enterprise.application;
+package com.toggn.mma.itp;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

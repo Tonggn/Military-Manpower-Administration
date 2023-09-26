@@ -1,4 +1,4 @@
-package com.toggn.mma.notice.domain;
+package com.toggn.mma.itp.notice.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
