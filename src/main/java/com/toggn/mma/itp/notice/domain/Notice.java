@@ -46,7 +46,7 @@ public class Notice {
     @Column(nullable = false)
     private Long enterpriseId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long noticeNumber;
 
     @Embedded
