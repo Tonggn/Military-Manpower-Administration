@@ -23,3 +23,10 @@ logging:
       hibernate:
         SQL: debug
         type.descriptor.sql.BasicBinder: trace
+
+mma:
+  itp:
+    enterprise:
+      client:
+        requestUrl: ${ENTERPRISE_CLIENT_REQUEST_URL}
+        secretKey: ${ENTERPRISE_CLIENT_SECRET_KEY}
