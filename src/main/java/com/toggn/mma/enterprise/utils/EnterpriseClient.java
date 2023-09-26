@@ -18,7 +18,7 @@ public class EnterpriseClient {
     public static Document requestAllEnterprises(final String requestUrl, final String secretKey) {
         final String url = getRequestAllEnterprisesUri(requestUrl, secretKey);
 
-        final Connection connect = Jsoup.connect(url);
+        final Connection connect = Jsoup.connect(url).maxBodySize(0);
 
         try {
             return Jsoup.parse(connect.get().html(), "", Parser.xmlParser());
