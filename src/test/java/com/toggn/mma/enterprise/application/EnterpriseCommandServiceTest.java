@@ -1,6 +1,6 @@
 package com.toggn.mma.enterprise.application;
 
-import com.toggn.mma.itp.OpenAPIRequestClient;
+import com.toggn.mma.itp.client.EnterpriseClient;
 import com.toggn.mma.itp.enterprise.application.EnterpriseCommandService;
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
@@ -36,7 +36,7 @@ class EnterpriseCommandServiceTest {
     @Autowired
     private EnterpriseRepository enterpriseRepository;
     @MockBean
-    private OpenAPIRequestClient openAPIRequestClient;
+    private EnterpriseClient enterpriseClient;
 
     private static Document convertToDocument(final EnterpriseParseResponse... responses) {
         final String xml =
@@ -61,7 +61,7 @@ class EnterpriseCommandServiceTest {
         final EnterpriseParseResponse expect = new EnterpriseParseResponse("기업1", "-1", "-1",
                 "websiteUrl1", "address1");
 
-        when(openAPIRequestClient.requestAllEnterprises()).thenReturn(convertToDocument(expect));
+        when(enterpriseClient.request()).thenReturn(convertToDocument(expect));
 
         // when
         enterpriseCommandService.updateAllEnterprises();
@@ -88,7 +88,7 @@ class EnterpriseCommandServiceTest {
         final EnterpriseParseResponse response = new EnterpriseParseResponse("기업1", "-1", "-1",
                 "websiteUrl1", "address1");
 
-        when(openAPIRequestClient.requestAllEnterprises()).thenReturn(convertToDocument(response));
+        when(enterpriseClient.request()).thenReturn(convertToDocument(response));
 
         // when
         enterpriseCommandService.updateAllEnterprises();
