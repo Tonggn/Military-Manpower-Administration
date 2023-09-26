@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+    <body>
+        <items>
+            <item>
+                <eopcheAddr>주소 1</eopcheAddr> <!-- 업체주소 -->
+                <eopcheNm>업체명 1</eopcheNm> <!-- 업체명 -->
+                <eopjongGbcd>업종코드 1</eopjongGbcd> <!-- 업종코드 -->
+                <gegyumoCd>기업규모코드 1</gegyumoCd> <!-- 기업규모코 -->
+                <hmpgAddr>홈페이지주소 1</hmpgAddr> <!-- 홈페이지주소 -->
+            </item>
+            <item>
+                <eopcheAddr>주소 2</eopcheAddr> <!-- 업체주소 -->
+                <eopcheNm>업체명 2</eopcheNm> <!-- 업체명 -->
+                <eopjongGbcd>업종코드 2</eopjongGbcd> <!-- 업종코드 -->
+                <gegyumoCd>기업규모코드 2</gegyumoCd> <!-- 기업규모코 -->
+                <hmpgAddr>홈페이지주소 2</hmpgAddr> <!-- 홈페이지주소 -->
+            </item>
+            <item>
+                <eopcheAddr>주소 3</eopcheAddr> <!-- 업체주소 -->
+                <eopcheNm>업체명 3</eopcheNm> <!-- 업체명 -->
+                <eopjongGbcd>업종코드 3</eopjongGbcd> <!-- 업종코드 -->
+                <gegyumoCd>기업규모코드 3</gegyumoCd> <!-- 기업규모코드 -->
+                <hmpgAddr>홈페이지주소 3</hmpgAddr> <!-- 홈페이지주소 -->
+            </item>
+        </items>
+    </body>
+</response>
