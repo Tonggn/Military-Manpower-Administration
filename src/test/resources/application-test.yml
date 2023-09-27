@@ -30,3 +30,7 @@ mma:
       client:
         requestUrl: request-url
         secretKey: secret-key
+    notice:
+      client:
+        requestUrl: request-url
+        secretKey: secret-key

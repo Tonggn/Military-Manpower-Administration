@@ -30,3 +30,7 @@ mma:
       client:
         requestUrl: ${ENTERPRISE_CLIENT_REQUEST_URL}
         secretKey: ${ENTERPRISE_CLIENT_SECRET_KEY}
+    notice:
+      client:
+        requestUrl: ${NOTICE_CLIENT_REQUEST_URL}
+        secretKey: ${NOTICE_CLIENT_SECRET_KEY}
