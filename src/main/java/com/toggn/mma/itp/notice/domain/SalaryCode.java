@@ -3,10 +3,13 @@ package com.toggn.mma.itp.notice.domain;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 @Getter
 @RequiredArgsConstructor
 public enum SalaryCode {
 
+    CODE_NOT_EXISTS("-1", 0, 0),
     CODE07("07", 20_000_000, 22_000_000),
     CODE08("08", 22_000_000, 24_000_000),
     CODE09("09", 24_000_000, 26_000_000),
@@ -28,4 +31,11 @@ public enum SalaryCode {
     private final String code;
     private final int minimumSalary;
     private final int maximumSalary;
+
+    public static SalaryCode from(final String code) {
+        return Arrays.stream(values())
+                .filter(value -> value.code.equals(code))
+                .findFirst()
+                .orElse(CODE_NOT_EXISTS);
+    }
 }
