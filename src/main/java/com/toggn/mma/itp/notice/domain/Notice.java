@@ -2,8 +2,13 @@ package com.toggn.mma.itp.notice.domain;
 
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notice {
 
     @Id
@@ -51,4 +56,34 @@ public class Notice {
 
     @Embedded
     private NoticeDate noticeDate;
+
+    public Notice(
+            final String title,
+            final String task,
+            final BusinessCode business,
+            final String welfare,
+            final SalaryCode salary,
+            final String serviceAddress,
+            final String highestEducationLevel,
+            final String experienceDivision,
+            final ServiceStatusCode serviceStatus,
+            final AgentCode agent,
+            final Long enterpriseId,
+            final Long noticeNumber,
+            final NoticeDate noticeDate
+    ) {
+        this.title = title;
+        this.task = task;
+        this.business = business;
+        this.welfare = welfare;
+        this.salary = salary;
+        this.serviceAddress = serviceAddress;
+        this.highestEducationLevel = highestEducationLevel;
+        this.experienceDivision = experienceDivision;
+        this.serviceStatus = serviceStatus;
+        this.agent = agent;
+        this.enterpriseId = enterpriseId;
+        this.noticeNumber = noticeNumber;
+        this.noticeDate = noticeDate;
+    }
 }
