@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>통근 mma</title>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet">
+</head>
+<body>
+<div class="container my-3">
+    <div th:each="notice:${notices}">
+        <table class="table table-hover table-striped-columns align-middle my-3">
+            <tbody>
+            <tr>
+                <th scope="row" style="width: 15%">채용공고</th>
+                <td style="width: 35%">
+                    <a target="_blank"
+                       th:href="'https://work.mma.go.kr/caisBYIS/search/cygonggogeomsaekView.do?cygonggo_no=' + ${notice.noticeNumber()}"
+                       th:text="${notice.title()}"></a>
+                </td>
+                <th scope="row" style="width: 15%">등록일 / 마감일</th>
+                <td style="width: 35%"
+                    th:text="${#temporals.format(notice.createdDate(), 'yy-MM-dd')} + ' / ' + ${#temporals.format(notice.deadlineDate(), 'yy-MM-dd')}"></td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 15%">업체명</th>
+                <td style="width: 35%" th:text="${notice.enterprise().name()}"></td>
+                <th scope="row" style="width: 15%">업종</th>
+                <td style="width: 35%" th:text="${notice.enterprise().businessType()}"></td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 15%">담당업무</th>
+                <td style="width: 35%" th:text="${notice.task()}"></td>
+                <th scope="row" style="width: 15%">급여조건</th>
+                <td style="width: 35%"
+                    th:text="${notice.minimumSalary() div 10000} + '만원 ~ '
+                    + ${notice.maximumSalary() div 10000} + '만원'"></td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 15%">고용형태</th>
+                <td style="width: 35%" th:text="${notice.agentType()}"></td>
+                <th scope="row" style="width: 15%">요원형태</th>
+                <td style="width: 35%" th:text="${notice.serviceStatusType()}"></td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 15%">최종학력</th>
+                <td style="width: 35%" th:text="${notice.highestEducationLevel()}"></td>
+                <th scope="row" style="width: 15%">경력구분</th>
+                <td style="width: 35%" th:text="${notice.experienceDivision()}"></td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 15%">근무지</th>
+                <td colspan="3" style="width: 85%" th:text="${notice.serviceAddress()}"></td>
+            </tr>
+            <tr>
+                <th scope="row" style="width: 15%">복리후생</th>
+                <td colspan="3" style="width: 85%" th:text="${notice.welfare()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script crossorigin="anonymous"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
