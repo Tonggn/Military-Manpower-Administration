@@ -21,10 +21,6 @@ public class Enterprise {
     @Column(name = "business_code", length = 20, nullable = false)
     private BusinessCode business;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "scale_code", length = 20, nullable = false)
-    private EnterpriseScaleCode scale;
-
     @Column(length = 1024, nullable = false)
     private String websiteUrl;
 
@@ -34,13 +30,11 @@ public class Enterprise {
     public Enterprise(
             final String name,
             final BusinessCode business,
-            final EnterpriseScaleCode scale,
             final String websiteUrl,
             final String address
     ) {
         this.name = name;
         this.business = business;
-        this.scale = scale;
         this.websiteUrl = websiteUrl;
         this.address = address;
     }

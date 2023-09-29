@@ -3,7 +3,6 @@ package com.toggn.mma.itp.notice.application;
 import com.toggn.mma.itp.client.NoticeClient;
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
-import com.toggn.mma.itp.enterprise.domain.EnterpriseScaleCode;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.notice.domain.*;
 import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
@@ -77,8 +76,7 @@ class NoticeCommandServiceTest {
 
     @BeforeEach
     void setUp() {
-        enterprise = enterpriseRepository.save(new Enterprise("enterprise name", BusinessCode.CODE_11111,
-                EnterpriseScaleCode.CODE_1, "https://enterprise.website", "enterprise address"));
+        enterprise = enterpriseRepository.save(new Enterprise("enterprise name", BusinessCode.CODE_11111, "https://enterprise.website", "enterprise address"));
 
         newNotice = new NoticeParseResponse(
                 "공고 제목",

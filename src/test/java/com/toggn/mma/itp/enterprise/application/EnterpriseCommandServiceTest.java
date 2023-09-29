@@ -3,7 +3,6 @@ package com.toggn.mma.itp.enterprise.application;
 import com.toggn.mma.itp.client.EnterpriseClient;
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
-import com.toggn.mma.itp.enterprise.domain.EnterpriseScaleCode;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.enterprise.parser.dto.EnterpriseParseResponse;
 import org.jsoup.Jsoup;
@@ -44,7 +43,6 @@ class EnterpriseCommandServiceTest {
                                 .map(response -> "<item>" +
                                         "<eopcheNm>" + response.name() + "</eopcheNm>" +
                                         "<eopjongGbcd>" + response.businessCode() + "</eopjongGbcd>" +
-                                        "<gegyumoCd>" + response.scaleCode() + "</gegyumoCd>" +
                                         "<hmpgAddr>" + response.websiteUrl() + "</hmpgAddr>" +
                                         "<eopcheAddr>" + response.address() + "</eopcheAddr>" +
                                         "</item>")
@@ -57,8 +55,7 @@ class EnterpriseCommandServiceTest {
     @DisplayName("updateAllEnterprises(): 새로운 기업의 정보를 저장한다.")
     void 새로운_기업_정보_저장_테스트() {
         // given
-        final EnterpriseParseResponse expect = new EnterpriseParseResponse("기업1", "-1", "-1",
-                "websiteUrl1", "address1");
+        final EnterpriseParseResponse expect = new EnterpriseParseResponse("기업1", "-1", "websiteUrl1", "address1");
 
         when(enterpriseClient.request()).thenReturn(convertToDocument(expect));
 
@@ -71,7 +68,6 @@ class EnterpriseCommandServiceTest {
         assertAll(
                 () -> assertThat(actual.getName()).isEqualTo(expect.name()),
                 () -> assertThat(actual.getBusiness().getCode()).isEqualTo(expect.businessCode()),
-                () -> assertThat(actual.getScale().getCode()).isEqualTo(expect.scaleCode()),
                 () -> assertThat(actual.getWebsiteUrl()).isEqualTo(expect.websiteUrl()),
                 () -> assertThat(actual.getAddress()).isEqualTo(expect.address())
         );
@@ -81,11 +77,9 @@ class EnterpriseCommandServiceTest {
     @DisplayName("updateAllEnterprises(): 이미 존재하는 기업일 경우 저장하지 않는다.")
     void 이미_존재하는_기업_저장_테스트() {
         // given
-        final Enterprise savedEnterprise = enterpriseRepository.save(new Enterprise("기업1", BusinessCode.CODE_11111,
-                EnterpriseScaleCode.CODE_1, "websiteUrl1", "address1"));
+        final Enterprise savedEnterprise = enterpriseRepository.save(new Enterprise("기업1", BusinessCode.CODE_11111, "websiteUrl1", "address1"));
 
-        final EnterpriseParseResponse response = new EnterpriseParseResponse("기업1", "-1", "-1",
-                "websiteUrl1", "address1");
+        final EnterpriseParseResponse response = new EnterpriseParseResponse("기업1", "-1", "websiteUrl1", "address1");
 
         when(enterpriseClient.request()).thenReturn(convertToDocument(response));
 

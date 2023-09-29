@@ -33,9 +33,9 @@ class EnterpriseParserTest {
         final Document document = getDocument();
 
         final List<EnterpriseParseResponse> expect = List.of(
-                new EnterpriseParseResponse("업체명 1", "업종코드 1", "기업규모코드 1", "홈페이지주소 1", "주소 1"),
-                new EnterpriseParseResponse("업체명 2", "업종코드 2", "기업규모코드 2", "홈페이지주소 2", "주소 2"),
-                new EnterpriseParseResponse("업체명 3", "업종코드 3", "기업규모코드 3", "홈페이지주소 3", "주소 3")
+                new EnterpriseParseResponse("업체명 1", "업종코드 1", "홈페이지주소 1", "주소 1"),
+                new EnterpriseParseResponse("업체명 2", "업종코드 2", "홈페이지주소 2", "주소 2"),
+                new EnterpriseParseResponse("업체명 3", "업종코드 3", "홈페이지주소 3", "주소 3")
         );
 
         // when

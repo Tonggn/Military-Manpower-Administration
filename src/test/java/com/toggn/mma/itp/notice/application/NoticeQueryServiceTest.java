@@ -2,7 +2,6 @@ package com.toggn.mma.itp.notice.application;
 
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
-import com.toggn.mma.itp.enterprise.domain.EnterpriseScaleCode;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.notice.application.dto.NoticeResponse;
 import com.toggn.mma.itp.notice.domain.*;
@@ -38,10 +37,8 @@ class NoticeQueryServiceTest {
 
     @BeforeEach
     void setUp() {
-        enterprise1 = enterpriseRepository.save(new Enterprise("업체1", BusinessCode.CODE_11111,
-                EnterpriseScaleCode.CODE_2, "http://업체1.url", "업체 1 주소지"));
-        enterprise2 = enterpriseRepository.save(new Enterprise("업체2", BusinessCode.CODE_11101,
-                EnterpriseScaleCode.CODE_2, "http://업체2.url", "업체 2 주소지"));
+        enterprise1 = enterpriseRepository.save(new Enterprise("업체1", BusinessCode.CODE_11111, "http://업체1.url", "업체 1 주소지"));
+        enterprise2 = enterpriseRepository.save(new Enterprise("업체2", BusinessCode.CODE_11101, "http://업체2.url", "업체 2 주소지"));
 
         final NoticeDate noticeDate = new NoticeDate(LocalDate.of(2021, 9, 23), LocalDate.of(2021, 9, 23), LocalDate.of(2021, 9, 30));
         notice1 = noticeRepository.save(new Notice("공고 제목1", "업무 내용1", BusinessCode.CODE_11111, "복리후생 내용",

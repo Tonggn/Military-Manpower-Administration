@@ -6,7 +6,6 @@ create table enterprise
     id            bigint auto_increment primary key,
     name          varchar(255)  not null,
     business_code varchar(20)   not null,
-    scale_code    varchar(20)   not null,
     website_url   varchar(1024) not null,
     address       varchar(1024) not null
 );

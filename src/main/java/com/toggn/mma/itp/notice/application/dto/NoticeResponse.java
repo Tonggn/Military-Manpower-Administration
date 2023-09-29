@@ -48,7 +48,6 @@ public record NoticeResponse(
     public record EnterpriseResponse(
             String name,
             String businessType,
-            String scale,
             String websiteUrl,
             String address
     ) {
@@ -57,7 +56,6 @@ public record NoticeResponse(
             return new EnterpriseResponse(
                     enterprise.getName(),
                     enterprise.getBusiness().getType(),
-                    enterprise.getScale().getType(),
                     enterprise.getWebsiteUrl(),
                     enterprise.getAddress()
             );

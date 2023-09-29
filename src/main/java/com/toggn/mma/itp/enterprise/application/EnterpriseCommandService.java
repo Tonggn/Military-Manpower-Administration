@@ -4,7 +4,6 @@ import com.toggn.mma.itp.client.EnterpriseClient;
 import com.toggn.mma.itp.client.OpenAPIClient;
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
-import com.toggn.mma.itp.enterprise.domain.EnterpriseScaleCode;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.enterprise.parser.EnterpriseParser;
 import com.toggn.mma.itp.enterprise.parser.dto.EnterpriseParseResponse;
@@ -44,11 +43,10 @@ public class EnterpriseCommandService {
     private Enterprise convertToEnterpriseEntity(final EnterpriseParseResponse response) {
         final String name = response.name();
         final BusinessCode businessCode = BusinessCode.from(response.businessCode());
-        final EnterpriseScaleCode enterpriseScaleCode = EnterpriseScaleCode.from(response.scaleCode());
         final String websiteUrl = response.websiteUrl();
         final String address = response.address();
 
-        return new Enterprise(name, businessCode, enterpriseScaleCode, websiteUrl, address);
+        return new Enterprise(name, businessCode, websiteUrl, address);
     }
 
     private List<EnterpriseParseResponse> filterAlreadyExistsEnterprises(

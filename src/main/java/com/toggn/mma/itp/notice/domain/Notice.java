@@ -20,6 +20,7 @@ public class Notice {
 
     @Column(nullable = false)
     private String task;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "business_code", length = 20, nullable = false)
     private BusinessCode business;
