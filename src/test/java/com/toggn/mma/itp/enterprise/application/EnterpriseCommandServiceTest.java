@@ -1,7 +1,6 @@
-package com.toggn.mma.enterprise.application;
+package com.toggn.mma.itp.enterprise.application;
 
 import com.toggn.mma.itp.client.EnterpriseClient;
-import com.toggn.mma.itp.enterprise.application.EnterpriseCommandService;
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.EnterpriseScaleCode;

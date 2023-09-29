@@ -1,4 +1,4 @@
-package com.toggn.mma.enterprise.utils;
+package com.toggn.mma.itp.enterprise.utils;
 
 import com.toggn.mma.itp.enterprise.parser.EnterpriseParser;
 import com.toggn.mma.itp.enterprise.parser.dto.EnterpriseParseResponse;
