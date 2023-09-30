@@ -50,10 +50,13 @@ class NoticeQueryServiceTest {
     }
 
     @Test
-    @DisplayName("findAllNotices(): 모든 공고를 조회한다.")
+    @DisplayName("findAllNotices(): 모든 공고를 최근 생성일시 순으로 조회한다.")
     void 모든_공고_조회_테스트() {
         // given
-        final List<NoticeResponse> expect = List.of(NoticeResponse.from(notice1, enterprise1), NoticeResponse.from(notice2, enterprise2));
+        final List<NoticeResponse> expect = List.of(
+                NoticeResponse.from(notice2, enterprise2),
+                NoticeResponse.from(notice1, enterprise1)
+        );
 
         // when
         final List<NoticeResponse> actual = noticeQueryService.findAllNotices();

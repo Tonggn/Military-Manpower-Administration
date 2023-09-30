@@ -22,7 +22,7 @@ public class NoticeQueryService {
     private final EnterpriseRepository enterpriseRepository;
 
     public List<NoticeResponse> findAllNotices() {
-        final List<Notice> notices = noticeRepository.findAll();
+        final List<Notice> notices = noticeRepository.findAllByOrderByCreatedAtDesc();
         final List<Long> enterpriseIds = notices.stream()
                 .map(Notice::getEnterpriseId)
                 .toList();
