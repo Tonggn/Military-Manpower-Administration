@@ -6,23 +6,19 @@ import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.notice.application.dto.NoticeResponse;
 import com.toggn.mma.itp.notice.domain.*;
 import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
+import com.toggn.mma.support.helper.SpringBootTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("test")
-@SpringBootTest
-@Sql(value = "/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class NoticeQueryServiceTest {
+
+class NoticeQueryServiceTest extends SpringBootTestHelper {
 
     @Autowired
     private NoticeQueryService noticeQueryService;
@@ -41,9 +37,7 @@ class NoticeQueryServiceTest {
         enterprise2 = enterpriseRepository.save(new Enterprise("업체2", BusinessCode.CODE_11101, "http://업체2.url", "업체 2 주소지"));
 
         final NoticeDate noticeDate = new NoticeDate(LocalDate.of(2021, 9, 23), LocalDate.of(2021, 9, 23), LocalDate.of(2021, 9, 30));
-        notice1 = noticeRepository.save(new Notice("공고 제목1", "업무 내용1", BusinessCode.CODE_11111, "복리후생 내용",
-                SalaryCode.CODE16, "근무지 주소", "최종학력", "경력 구분", ServiceStatusCode.CODE002,
-                AgentCode.CODE1, enterprise1.getId(), 20230923L, noticeDate));
+        notice1 = noticeRepository.save(new Notice("공고 제목1", "업무 내용1", BusinessCode.CODE_11111, "복리후생 내용", SalaryCode.CODE16, "근무지 주소", "최종학력", "경력 구분", ServiceStatusCode.CODE002, AgentCode.CODE1, enterprise1.getId(), 20230923L, noticeDate));
         notice2 = noticeRepository.save(new Notice("공고 제목2", "업무 내용2", BusinessCode.CODE_11101, "복리후생 내용",
                 SalaryCode.CODE16, "근무지 주소", "최종학력", "경력 구분", ServiceStatusCode.CODE002,
                 AgentCode.CODE1, enterprise2.getId(), 20230923L, noticeDate));
