@@ -60,6 +60,27 @@
             </tbody>
         </table>
     </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${notices.isFirst()} ? 'disabled'">
+                <a aria-label="Previous" class="page-link" th:href="@{/notices(page=${notices.getNumber()-1})}">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item"
+                th:classappend="${page == notices.getNumber()} ? 'active'"
+                th:each="page: ${#numbers.sequence(0, notices.getTotalPages()-1)}"
+                th:if="${page >= notices.getNumber()-5 and page <= notices.getNumber()+5}">
+                <a class="page-link" th:href="@{/notices(page=${page})}" th:text="${page}"></a>
+            </li>
+            <a aria-label="Next" class="page-link" th:href="@{/notices(page=${notices.getNumber()+1})}">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 <script crossorigin="anonymous"

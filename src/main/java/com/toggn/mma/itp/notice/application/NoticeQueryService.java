@@ -6,6 +6,10 @@ import com.toggn.mma.itp.notice.application.dto.NoticeResponse;
 import com.toggn.mma.itp.notice.domain.Notice;
 import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,19 +22,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NoticeQueryService {
 
+    private static final int PAGE_SIZE = 20;
+
     private final NoticeRepository noticeRepository;
     private final EnterpriseRepository enterpriseRepository;
 
-    public List<NoticeResponse> findAllNotices() {
-        final List<Notice> notices = noticeRepository.findAllByOrderByCreatedAtDesc();
+    public Page<NoticeResponse> findAllNotices(final int pageNum) {
+        final Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE);
+        final Page<Notice> notices = noticeRepository.findAllByOrderByCreatedAtDesc(pageable);
+
+        final Map<Long, Enterprise> enterpriseMap = getLongEnterpriseMap(notices);
+
+        final List<NoticeResponse> noticeResponses = notices.stream()
+                .map(notice -> NoticeResponse.from(notice, enterpriseMap.get(notice.getEnterpriseId())))
+                .toList();
+
+        return new PageImpl<>(noticeResponses, pageable, notices.getTotalElements());
+    }
+
+    private Map<Long, Enterprise> getLongEnterpriseMap(final Page<Notice> notices) {
         final List<Long> enterpriseIds = notices.stream()
                 .map(Notice::getEnterpriseId)
                 .toList();
-        final Map<Long, Enterprise> enterpriseMap = enterpriseRepository.findAllByIdIn(enterpriseIds).stream()
+        return enterpriseRepository.findAllByIdIn(enterpriseIds).stream()
                 .collect(Collectors.toMap(Enterprise::getId, enterprise -> enterprise));
-
-        return notices.stream()
-                .map(notice -> NoticeResponse.from(notice, enterpriseMap.get(notice.getEnterpriseId())))
-                .toList();
     }
 }
