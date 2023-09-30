@@ -27,5 +27,7 @@ create table notice
     notice_number           bigint        not null,
     created_date            date          not null,
     updated_date            date          not null,
-    deadline_date           date          not null
+    deadline_date           date          not null,
+    created_at              datetime(6)   null,
+    updated_at              datetime(6)   null
 );

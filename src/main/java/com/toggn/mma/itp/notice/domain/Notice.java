@@ -1,5 +1,6 @@
 package com.toggn.mma.itp.notice.domain;
 
+import com.toggn.mma.base.BaseDatetimeEntity;
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notice {
+public class Notice extends BaseDatetimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
