@@ -77,9 +77,11 @@
                 th:if="${page >= notices.getNumber()-5 and page <= notices.getNumber()+5}">
                 <a class="page-link" th:href="@{/notices(page=${page})}" th:text="${page}"></a>
             </li>
-            <a aria-label="Next" class="page-link" th:href="@{/notices(page=${notices.getNumber()+1})}">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
+
+            <li class="page-item" th:classappend="${notices.isLast()} ? 'disabled'">
+                <a aria-label="Next" class="page-link" th:href="@{/notices(page=${notices.getNumber()+1})}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
             </li>
         </ul>
     </nav>
