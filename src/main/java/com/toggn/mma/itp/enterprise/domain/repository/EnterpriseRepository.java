@@ -13,4 +13,7 @@ public interface EnterpriseRepository extends JpaRepository<Enterprise, Long> {
 
     @Query("select e.name from Enterprise e")
     List<String> findAllNames();
+
+    @Query("select e from Enterprise e where e.name in :names")
+    List<Enterprise> findAllByNameIn(List<String> names);
 }

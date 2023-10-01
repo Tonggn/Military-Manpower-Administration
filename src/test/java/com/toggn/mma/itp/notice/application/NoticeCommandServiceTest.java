@@ -3,10 +3,7 @@ package com.toggn.mma.itp.notice.application;
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
-import com.toggn.mma.itp.notice.domain.AgentCode;
-import com.toggn.mma.itp.notice.domain.Notice;
-import com.toggn.mma.itp.notice.domain.SalaryCode;
-import com.toggn.mma.itp.notice.domain.ServiceStatusCode;
+import com.toggn.mma.itp.notice.domain.*;
 import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
 import com.toggn.mma.itp.notice.parser.dto.NoticeParseResponse;
 import com.toggn.mma.support.fixture.EnterpriseFixture;
@@ -127,5 +124,68 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
                 .usingRecursiveComparison()
                 .ignoringFields("id", "createdAt", "updatedAt")
                 .isEqualTo(expect);
+
+    }
+
+    @Test
+    @DisplayName("updateAllNotices(): 기존 공고의 정보를 업데이트한다.")
+    void 기존_공고_업데이트_테스트() {
+        // given
+        final Notice savedNotice = noticeRepository.save(newNotice);
+
+        final Notice updatedNotice = new Notice(
+                "업데이트된 제목",
+                "업데이트된 업무",
+                savedNotice.getBusiness(),
+                "업데이트된 복리후생",
+                SalaryCode.CODE09,
+                savedNotice.getServiceAddress(),
+                "업데이트된 최종학력",
+                "업데이트된 경력구분",
+                ServiceStatusCode.CODE006,
+                AgentCode.CODE2,
+                savedNotice.getEnterpriseId(),
+                savedNotice.getNoticeNumber(),
+                new NoticeDate(
+                        LocalDate.of(2024, 1, 1),
+                        LocalDate.of(2024, 2, 1),
+                        LocalDate.of(2024, 3, 1)
+                )
+        );
+
+        final NoticeParseResponse noticeResponse = NoticeFixture.convertToNoticeParseResponse(updatedNotice, enterprise);
+        when(noticeClient.request()).thenReturn(noticesDocument(noticeResponse));
+
+        // when
+        noticeCommandService.updateAllNotices();
+
+        // then
+        assertThat(noticeRepository.findAll()).hasSize(1);
+
+        final Notice actual = noticeRepository.findAll().get(0);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "createdAt", "updatedAt")
+                .isEqualTo(updatedNotice);
+        assertThat(actual.getCreatedAt().isBefore(actual.getUpdatedAt())).isTrue();
+    }
+
+    @Test
+    @DisplayName("updateAllNotices(): 변경 사항이 없는 공고는 업데이트가 일어나지 않는다.")
+    void 동일_공고_업데이트_테스트() {
+        // given
+        final Notice savedNotice = noticeRepository.save(newNotice);
+
+        final NoticeParseResponse noticeResponse = NoticeFixture.convertToNoticeParseResponse(savedNotice, enterprise);
+        when(noticeClient.request()).thenReturn(noticesDocument(noticeResponse));
+
+        // then
+        noticeCommandService.updateAllNotices();
+
+        // then
+        assertThat(noticeRepository.findAll()).hasSize(1);
+
+        final Notice actual = noticeRepository.findAll().get(0);
+        assertThat(actual.getCreatedAt().isEqual(actual.getUpdatedAt())).isTrue();
     }
 }

@@ -88,4 +88,34 @@ public class Notice extends BaseDatetimeEntity {
         this.noticeNumber = noticeNumber;
         this.noticeDate = noticeDate;
     }
+
+    public boolean isUpdatable(final Notice notice) {
+        return this.noticeNumber.equals(notice.getNoticeNumber()) && (
+                !this.title.equals(notice.getTitle()) ||
+                        !this.task.equals(notice.getTask()) ||
+                        !this.business.equals(notice.getBusiness()) ||
+                        !this.welfare.equals(notice.getWelfare()) ||
+                        !this.salary.equals(notice.getSalary()) ||
+                        !this.serviceAddress.equals(notice.getServiceAddress()) ||
+                        !this.highestEducationLevel.equals(notice.getHighestEducationLevel()) ||
+                        !this.experienceDivision.equals(notice.getExperienceDivision()) ||
+                        !this.serviceStatus.equals(notice.getServiceStatus()) ||
+                        !this.agent.equals(notice.getAgent()) ||
+                        !this.noticeDate.equals(notice.getNoticeDate())
+        );
+    }
+
+    public void update(final Notice notice) {
+        this.title = notice.getTitle();
+        this.task = notice.getTask();
+        this.business = notice.getBusiness();
+        this.welfare = notice.getWelfare();
+        this.salary = notice.getSalary();
+        this.serviceAddress = notice.getServiceAddress();
+        this.highestEducationLevel = notice.getHighestEducationLevel();
+        this.experienceDivision = notice.getExperienceDivision();
+        this.serviceStatus = notice.getServiceStatus();
+        this.agent = notice.getAgent();
+        this.noticeDate = notice.getNoticeDate();
+    }
 }

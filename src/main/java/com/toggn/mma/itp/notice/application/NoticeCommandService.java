@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -38,29 +40,31 @@ public class NoticeCommandService {
     public void updateAllNotices() {
         final Document document = openAPIClient.request();
         final List<NoticeParseResponse> noticeParseResponses = NoticeParser.parseAllNotices(document);
-        final List<Enterprise> enterprises = enterpriseRepository.findAll();
-        final List<NoticeParseResponse> enterpriseExistsNoticeResponses = filterEnterpriseNotExistsNotices(noticeParseResponses, enterprises);
-        final List<NoticeParseResponse> newNoticeResponses = filterAlreadyExistsNotices(enterpriseExistsNoticeResponses);
+        final List<Notice> notices = convertToNoticeEntities(noticeParseResponses);
 
-        newNoticeResponses.stream()
-                .map(response -> convertToNoticeEntity(response, enterprises))
-                .forEach(noticeRepository::save);
+        final List<Long> noticeNumbers = notices.stream()
+                .map(Notice::getNoticeNumber)
+                .toList();
+        final List<Notice> savedNotices = noticeRepository.findAllByNoticeNumberIn(noticeNumbers);
+
+        saveUpdatedNotices(notices, savedNotices);
+        saveNewNotices(notices, savedNotices);
     }
 
-    private List<NoticeParseResponse> filterEnterpriseNotExistsNotices(
-            final List<NoticeParseResponse> newNoticeParseResponses,
-            final List<Enterprise> enterprises
-    ) {
-        final List<String> enterpriseNames = enterprises.stream()
-                .map(Enterprise::getName)
+    private List<Notice> convertToNoticeEntities(final List<NoticeParseResponse> noticeParseResponses) {
+        final List<String> enterpriseNames = noticeParseResponses.stream()
+                .map(NoticeParseResponse::enterpriseName)
                 .toList();
+        final Map<String, Long> enterpriseNameIdMap = enterpriseRepository.findAllByNameIn(enterpriseNames).stream()
+                .collect(Collectors.toMap(Enterprise::getName, Enterprise::getId));
 
-        return newNoticeParseResponses.stream()
-                .filter(response -> enterpriseNames.contains(response.enterpriseName()))
+        return noticeParseResponses.stream()
+                .filter(response -> enterpriseNameIdMap.containsKey(response.enterpriseName()))
+                .map(response -> convertToNoticeEntity(response, enterpriseNameIdMap.get(response.enterpriseName())))
                 .toList();
     }
 
-    private Notice convertToNoticeEntity(final NoticeParseResponse response, final List<Enterprise> enterprises) {
+    private Notice convertToNoticeEntity(final NoticeParseResponse response, final Long enterpriseId) {
         final String title = response.title();
         final String task = response.task();
         final BusinessCode business = BusinessCode.from(response.businessCode());
@@ -71,11 +75,6 @@ public class NoticeCommandService {
         final String experienceDivision = response.experienceDivision();
         final ServiceStatusCode serviceStatus = ServiceStatusCode.from(response.serviceStatusCode());
         final AgentCode agent = AgentCode.from(response.agentCode());
-        final Enterprise enterprise = enterprises.stream()
-                .filter(ent -> ent.getName().equals(response.enterpriseName()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid enterprise name: " + response.enterpriseName()));
-        final Long enterpriseId = enterprise.getId();
         final Long noticeNumber = response.noticeNumber();
         final NoticeDate noticeDate = new NoticeDate(response.createdDate(), response.updatedDate(),
                 response.deadlineDate());
@@ -84,16 +83,26 @@ public class NoticeCommandService {
                 experienceDivision, serviceStatus, agent, enterpriseId, noticeNumber, noticeDate);
     }
 
-    private List<NoticeParseResponse> filterAlreadyExistsNotices(
-            final List<NoticeParseResponse> noticeParseResponses
-    ) {
-        final List<Notice> notices = noticeRepository.findAll();
-        final List<Long> noticeNumbers = notices.stream()
+    private void saveUpdatedNotices(final List<Notice> notices, final List<Notice> savedNotices) {
+        final Map<Long, Notice> noticeNumberNoticeMap = savedNotices.stream()
+                .collect(Collectors.toMap(Notice::getNoticeNumber, notice -> notice));
+
+        notices.stream()
+                .filter(notice -> noticeNumberNoticeMap.containsKey(notice.getNoticeNumber()) && noticeNumberNoticeMap.get(notice.getNoticeNumber()).isUpdatable(notice))
+                .forEach(notice -> {
+                    final Notice savedNotice = noticeNumberNoticeMap.get(notice.getNoticeNumber());
+                    savedNotice.update(notice);
+                    noticeRepository.save(savedNotice);
+                });
+    }
+
+    private void saveNewNotices(final List<Notice> notices, final List<Notice> savedNotices) {
+        final List<Long> savedNoticeNumbers = savedNotices.stream()
                 .map(Notice::getNoticeNumber)
                 .toList();
 
-        return noticeParseResponses.stream()
-                .filter(response -> !noticeNumbers.contains(response.noticeNumber()))
-                .toList();
+        notices.stream()
+                .filter(notice -> !savedNoticeNumbers.contains(notice.getNoticeNumber()))
+                .forEach(noticeRepository::save);
     }
 }
