@@ -32,10 +32,10 @@ public class EnterpriseCommandService {
     @Scheduled(cron = "0 0 10-18/2 * * *") // 매일 오전 10시부터 오후 6시까지 2시간마다 실행
     public void updateAllEnterprises() {
         final Document document = openAPIClient.request();
-        final List<EnterpriseParseResponse> newEnterpriseParseResponses = filterAlreadyExistsEnterprises(
-                EnterpriseParser.parseAllEnterprises(document));
+        final List<EnterpriseParseResponse> newEnterpriseResponses = excludeExistsEnterprise(
+                EnterpriseParser.parseAll(document));
 
-        newEnterpriseParseResponses.stream()
+        newEnterpriseResponses.stream()
                 .map(this::convertToEnterpriseEntity)
                 .forEach(enterpriseRepository::save);
     }
@@ -49,13 +49,10 @@ public class EnterpriseCommandService {
         return new Enterprise(name, businessCode, websiteUrl, address);
     }
 
-    private List<EnterpriseParseResponse> filterAlreadyExistsEnterprises(
+    private List<EnterpriseParseResponse> excludeExistsEnterprise(
             final List<EnterpriseParseResponse> enterpriseParseResponses
     ) {
-        final List<Enterprise> enterprises = enterpriseRepository.findAll();
-        final List<String> enterpriseNames = enterprises.stream()
-                .map(Enterprise::getName)
-                .toList();
+        final List<String> enterpriseNames = enterpriseRepository.findAllNames();
 
         return enterpriseParseResponses.stream()
                 .filter(response -> !enterpriseNames.contains(response.name()))

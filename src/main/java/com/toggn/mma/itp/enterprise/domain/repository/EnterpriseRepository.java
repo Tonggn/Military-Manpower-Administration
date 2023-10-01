@@ -10,4 +10,7 @@ public interface EnterpriseRepository extends JpaRepository<Enterprise, Long> {
 
     @Query("select e from Enterprise e where e.id in :enterpriseIds")
     List<Enterprise> findAllByIdIn(List<Long> enterpriseIds);
+
+    @Query("select e.name from Enterprise e")
+    List<String> findAllNames();
 }

@@ -18,7 +18,7 @@ public class EnterpriseParser {
     private EnterpriseParser() {
     }
 
-    public static List<EnterpriseParseResponse> parseAllEnterprises(final Document document) {
+    public static List<EnterpriseParseResponse> parseAll(final Document document) {
         final Elements items = document.select(ITEM_SELECTOR);
 
         return items.stream()

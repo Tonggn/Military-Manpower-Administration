@@ -27,7 +27,7 @@ class EnterpriseParserTest {
     }
 
     @Test
-    @DisplayName("parseAllEnterprises(): Jsoup으로 읽어들인 Document로부터 기업 정보를 파싱한다.")
+    @DisplayName("parseAll(): Jsoup으로 읽어들인 Document로부터 기업 정보를 파싱한다.")
     void 기업_정보_파싱_테스트() {
         // given
         final Document document = getDocument();
@@ -39,7 +39,7 @@ class EnterpriseParserTest {
         );
 
         // when
-        final List<EnterpriseParseResponse> actual = EnterpriseParser.parseAllEnterprises(document);
+        final List<EnterpriseParseResponse> actual = EnterpriseParser.parseAll(document);
 
         // then
         assertThat(actual)
