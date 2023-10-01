@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,7 +34,7 @@ public class EnterpriseCommandService {
     @Scheduled(cron = "0 0 10-18/2 * * *") // 매일 오전 10시부터 오후 6시까지 2시간마다 실행
     public void updateAllEnterprises() {
         final Document document = openAPIClient.request();
-        final List<EnterpriseParseResponse> newEnterpriseResponses = excludeExistsEnterprise(
+        final Set<EnterpriseParseResponse> newEnterpriseResponses = excludeExistsEnterprise(
                 EnterpriseParser.parseAll(document));
 
         newEnterpriseResponses.stream()
@@ -49,13 +51,13 @@ public class EnterpriseCommandService {
         return new Enterprise(name, businessCode, websiteUrl, address);
     }
 
-    private List<EnterpriseParseResponse> excludeExistsEnterprise(
+    private Set<EnterpriseParseResponse> excludeExistsEnterprise(
             final List<EnterpriseParseResponse> enterpriseParseResponses
     ) {
         final List<String> enterpriseNames = enterpriseRepository.findAllNames();
 
         return enterpriseParseResponses.stream()
                 .filter(response -> !enterpriseNames.contains(response.name()))
-                .toList();
+                .collect(Collectors.toSet());
     }
 }

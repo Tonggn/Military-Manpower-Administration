@@ -1,5 +1,6 @@
 package com.toggn.mma.itp.enterprise.application;
 
+import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.enterprise.parser.dto.EnterpriseParseResponse;
@@ -52,12 +53,17 @@ class EnterpriseCommandServiceTest extends SpringBootTestHelper {
     }
 
     @Test
-    @DisplayName("updateAllEnterprises(): 이미 존재하는 기업일 경우 저장하지 않는다.")
-    void 이미_존재하는_기업_저장_테스트() {
+    @DisplayName("updateAllEnterprises(): 이름이 같은 업체가 존재할 경우 저장하지 않는다.")
+    void 동일_업체명_저장_테스트() {
         // given
         enterpriseRepository.save(enterprise);
 
-        final EnterpriseParseResponse enterpriseResponse = convertToEnterpriseParseResponse(enterprise);
+        final EnterpriseParseResponse enterpriseResponse = new EnterpriseParseResponse(
+                enterprise.getName(),
+                BusinessCode.CODE_11101.getCode(),
+                "http://another-website.com",
+                "another address"
+        );
 
         when(enterpriseClient.request()).thenReturn(enterprisesDocument(enterpriseResponse));
 
