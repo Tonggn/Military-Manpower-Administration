@@ -56,4 +56,4 @@ jobs:
         run: chmod +x /home/pi/mma/*.jar
 
       - name: Run sh
-        run: /home/pi/mma/run.sh
+        run: sudo /home/pi/mma/run.sh
