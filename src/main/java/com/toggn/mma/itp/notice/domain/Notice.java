@@ -24,14 +24,14 @@ public class Notice extends BaseDatetimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "business_type", length = 20, nullable = false)
-    private BusinessType business;
+    private BusinessType businessType;
 
     @Column(nullable = false)
     private String welfare;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "salary_code", length = 20, nullable = false)
-    private SalaryCode salary;
+    @Column(name = "salary_type", length = 20, nullable = false)
+    private SalaryType salaryType;
 
     @Column(length = 1024, nullable = false)
     private String serviceAddress;
@@ -43,12 +43,12 @@ public class Notice extends BaseDatetimeEntity {
     private String experienceDivision;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "service_status_code", length = 20, nullable = false)
-    private ServiceStatusCode serviceStatus;
+    @Column(name = "service_status_type", length = 20, nullable = false)
+    private ServiceStatusType serviceStatusType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "agent_code", length = 20, nullable = false)
-    private AgentCode agent;
+    @Column(name = "agent_type", length = 20, nullable = false)
+    private AgentType agentType;
 
     @Column(nullable = false)
     private Long enterpriseId;
@@ -62,28 +62,28 @@ public class Notice extends BaseDatetimeEntity {
     public Notice(
             final String title,
             final String task,
-            final BusinessType business,
+            final BusinessType businessType,
             final String welfare,
-            final SalaryCode salary,
+            final SalaryType salaryType,
             final String serviceAddress,
             final String highestEducationLevel,
             final String experienceDivision,
-            final ServiceStatusCode serviceStatus,
-            final AgentCode agent,
+            final ServiceStatusType serviceStatusType,
+            final AgentType agentType,
             final Long enterpriseId,
             final Long noticeNumber,
             final NoticeDate noticeDate
     ) {
         this.title = title;
         this.task = task;
-        this.business = business;
+        this.businessType = businessType;
         this.welfare = welfare;
-        this.salary = salary;
+        this.salaryType = salaryType;
         this.serviceAddress = serviceAddress;
         this.highestEducationLevel = highestEducationLevel;
         this.experienceDivision = experienceDivision;
-        this.serviceStatus = serviceStatus;
-        this.agent = agent;
+        this.serviceStatusType = serviceStatusType;
+        this.agentType = agentType;
         this.enterpriseId = enterpriseId;
         this.noticeNumber = noticeNumber;
         this.noticeDate = noticeDate;
@@ -93,14 +93,14 @@ public class Notice extends BaseDatetimeEntity {
         return this.noticeNumber.equals(notice.getNoticeNumber()) && (
                 !this.title.equals(notice.getTitle()) ||
                         !this.task.equals(notice.getTask()) ||
-                        !this.business.equals(notice.getBusiness()) ||
+                        !this.businessType.equals(notice.getBusinessType()) ||
                         !this.welfare.equals(notice.getWelfare()) ||
-                        !this.salary.equals(notice.getSalary()) ||
+                        !this.salaryType.equals(notice.getSalaryType()) ||
                         !this.serviceAddress.equals(notice.getServiceAddress()) ||
                         !this.highestEducationLevel.equals(notice.getHighestEducationLevel()) ||
                         !this.experienceDivision.equals(notice.getExperienceDivision()) ||
-                        !this.serviceStatus.equals(notice.getServiceStatus()) ||
-                        !this.agent.equals(notice.getAgent()) ||
+                        !this.serviceStatusType.equals(notice.getServiceStatusType()) ||
+                        !this.agentType.equals(notice.getAgentType()) ||
                         !this.noticeDate.equals(notice.getNoticeDate())
         );
     }
@@ -108,14 +108,14 @@ public class Notice extends BaseDatetimeEntity {
     public void update(final Notice notice) {
         this.title = notice.getTitle();
         this.task = notice.getTask();
-        this.business = notice.getBusiness();
+        this.businessType = notice.getBusinessType();
         this.welfare = notice.getWelfare();
-        this.salary = notice.getSalary();
+        this.salaryType = notice.getSalaryType();
         this.serviceAddress = notice.getServiceAddress();
         this.highestEducationLevel = notice.getHighestEducationLevel();
         this.experienceDivision = notice.getExperienceDivision();
-        this.serviceStatus = notice.getServiceStatus();
-        this.agent = notice.getAgent();
+        this.serviceStatusType = notice.getServiceStatusType();
+        this.agentType = notice.getAgentType();
         this.noticeDate = notice.getNoticeDate();
     }
 }

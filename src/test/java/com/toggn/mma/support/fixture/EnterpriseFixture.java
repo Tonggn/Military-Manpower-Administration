@@ -13,7 +13,7 @@ public class EnterpriseFixture {
     public static EnterpriseParseResponse convertToEnterpriseParseResponse(final Enterprise enterprise) {
         return new EnterpriseParseResponse(
                 enterprise.getName(),
-                enterprise.getBusiness().getCode(),
+                enterprise.getBusinessType().getCode(),
                 enterprise.getWebsiteUrl(),
                 enterprise.getAddress()
         );

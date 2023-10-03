@@ -13,11 +13,11 @@ class BusinessTypeTest {
     @ParameterizedTest
     @EmptySource
     @NullSource
-    @DisplayName("from(): 업종코드가 존재하지 않을 경우 CODE_NOT_EXISTS를 반환한다.")
-    void 업종_코드가_존재하지_않을_경우_CODE_NOT_EXISTS를_반환한다(final String notExistsCode) {
+    @DisplayName("from(): 업종코드가 존재하지 않을 경우 TYPE_UNLISTED를 반환한다.")
+    void 업종_코드가_존재하지_않을_경우_TYPE_UNLISTED를_반환한다(final String invalidBusinessTypeCode) {
         // given
         // when
-        final BusinessType actual = BusinessType.from(notExistsCode);
+        final BusinessType actual = BusinessType.from(invalidBusinessTypeCode);
 
         // then
         assertThat(actual).isEqualTo(TYPE_UNLISTED);

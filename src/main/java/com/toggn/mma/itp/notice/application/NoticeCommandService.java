@@ -67,14 +67,14 @@ public class NoticeCommandService {
     private Notice convertToNoticeEntity(final NoticeParseResponse response, final Long enterpriseId) {
         final String title = response.title();
         final String task = response.task();
-        final BusinessType business = BusinessType.from(response.businessCode());
+        final BusinessType business = BusinessType.from(response.businessTypeCode());
         final String welfare = response.welfare();
-        final SalaryCode salary = SalaryCode.from(response.salaryCode());
+        final SalaryType salary = SalaryType.from(response.salaryTypeCode());
         final String serviceAddress = response.serviceAddress();
         final String highestEducationLevel = response.highestEducationLevel();
         final String experienceDivision = response.experienceDivision();
-        final ServiceStatusCode serviceStatus = ServiceStatusCode.from(response.serviceStatusCode());
-        final AgentCode agent = AgentCode.from(response.agentCode());
+        final ServiceStatusType serviceStatus = ServiceStatusType.from(response.serviceStatusTypeCode());
+        final AgentType agent = AgentType.from(response.agentTypeCode());
         final Long noticeNumber = response.noticeNumber();
         final NoticeDate noticeDate = new NoticeDate(response.createdDate(), response.updatedDate(),
                 response.deadlineDate());

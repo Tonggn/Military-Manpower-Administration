@@ -7,18 +7,18 @@ import org.junit.jupiter.params.provider.NullSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SalaryCodeTest {
+class AgentTypeTest {
 
     @ParameterizedTest
     @EmptySource
     @NullSource
-    @DisplayName("from(): 급여코드가 존재하지 않을 경우 CODE_NOT_EXISTS를 반환한다.")
-    void 급여_코드가_존재하지_않을_경우_CODE_NOT_EXISTS를_반환한다(final String code) {
+    @DisplayName("from(): 요원코드가 존재하지 않을 경우 TYPE_UNLISTED를 반환한다.")
+    void 요원_코드가_존재하지_않을_경우_TYPE_UNLISTED를_반환한다(final String invalidAgentTypeCode) {
         // given
         // when
-        final SalaryCode actual = SalaryCode.from(code);
+        final AgentType actual = AgentType.from(invalidAgentTypeCode);
 
         // then
-        assertEquals(SalaryCode.CODE_NOT_EXISTS, actual);
+        assertEquals(AgentType.TYPE_UNLISTED, actual);
     }
 }

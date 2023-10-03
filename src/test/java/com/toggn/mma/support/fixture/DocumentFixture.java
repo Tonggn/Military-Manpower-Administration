@@ -34,14 +34,14 @@ public class DocumentFixture {
                                 .map(response -> "<item>" +
                                         "<cyjemokNm>" + response.title() + "</cyjemokNm>" +
                                         "<ddeopmuNm>" + response.task() + "</ddeopmuNm>" +
-                                        "<eopjongGbcd>" + response.businessCode() + "</eopjongGbcd>" +
+                                        "<eopjongGbcd>" + response.businessTypeCode() + "</eopjongGbcd>" +
                                         "<bokrihs>" + response.welfare() + "</bokrihs>" +
-                                        "<gyjogeonCd>" + response.salaryCode() + "</gyjogeonCd>" +
+                                        "<gyjogeonCd>" + response.salaryTypeCode() + "</gyjogeonCd>" +
                                         "<geunmujy>" + response.serviceAddress() + "</geunmujy>" +
                                         "<cjhakryeok>" + response.highestEducationLevel() + "</cjhakryeok>" +
                                         "<gyeongryeokGbcdNm>" + response.experienceDivision() + "</gyeongryeokGbcdNm>" +
-                                        "<yeokjongBrcd>" + response.serviceStatusCode() + "</yeokjongBrcd>" +
-                                        "<yowonGbcd>" + response.agentCode() + "</yowonGbcd>" +
+                                        "<yeokjongBrcd>" + response.serviceStatusTypeCode() + "</yeokjongBrcd>" +
+                                        "<yowonGbcd>" + response.agentTypeCode() + "</yowonGbcd>" +
                                         "<eopcheNm>" + response.enterpriseName() + "</eopcheNm>" +
                                         "<cygonggoNo>" + response.noticeNumber() + "</cygonggoNo>" +
                                         "<ccdatabalsaengDtm>" + localDateToString(response.createdDate()) + "</ccdatabalsaengDtm>" +

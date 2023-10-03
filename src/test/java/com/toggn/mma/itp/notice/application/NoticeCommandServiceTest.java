@@ -39,9 +39,9 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
 
         newNotice = getNotice(
                 enterprise,
-                SalaryCode.CODE07,
-                ServiceStatusCode.CODE002,
-                AgentCode.CODE1,
+                SalaryType.TYPE_07,
+                ServiceStatusType.TYPE_002,
+                AgentType.TYPE_1,
                 LocalDate.of(2024, 1, 1),
                 LocalDate.of(2024, 1, 1),
                 LocalDate.of(2024, 2, 1)
@@ -83,9 +83,9 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
 
         final Notice notice = getNotice(
                 존재하지_않는_업체,
-                SalaryCode.CODE07,
-                ServiceStatusCode.CODE002,
-                AgentCode.CODE1,
+                SalaryType.TYPE_07,
+                ServiceStatusType.TYPE_002,
+                AgentType.TYPE_1,
                 LocalDate.of(2024, 1, 1),
                 LocalDate.of(2024, 1, 1),
                 LocalDate.of(2024, 2, 1)
@@ -136,14 +136,14 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
         final Notice updatedNotice = new Notice(
                 "업데이트된 제목",
                 "업데이트된 업무",
-                savedNotice.getBusiness(),
+                savedNotice.getBusinessType(),
                 "업데이트된 복리후생",
-                SalaryCode.CODE09,
+                SalaryType.TYPE_09,
                 savedNotice.getServiceAddress(),
                 "업데이트된 최종학력",
                 "업데이트된 경력구분",
-                ServiceStatusCode.CODE006,
-                AgentCode.CODE2,
+                ServiceStatusType.TYPE_006,
+                AgentType.TYPE_2,
                 savedNotice.getEnterpriseId(),
                 savedNotice.getNoticeNumber(),
                 new NoticeDate(

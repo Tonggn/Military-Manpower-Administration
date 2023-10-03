@@ -7,20 +7,19 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum AgentCode {
+public enum ServiceStatusType {
 
-    CODE_NOT_EXISTS("-1", "미기재"),
-    CODE1("1", "산업기능요원"),
-    CODE2("2", "전문연구요원"),
-    CODE3("3", "승선근무예비역");
+    TYPE_UNLISTED("-1", "미기재"),
+    TYPE_002("002", "보충역"),
+    TYPE_006("006", "현역");
 
     private final String code;
-    private final String type;
+    private final String name;
 
-    public static AgentCode from(final String code) {
+    public static ServiceStatusType from(final String code) {
         return Arrays.stream(values())
                 .filter(value -> value.code.equals(code))
                 .findFirst()
-                .orElse(CODE_NOT_EXISTS);
+                .orElse(TYPE_UNLISTED);
     }
 }

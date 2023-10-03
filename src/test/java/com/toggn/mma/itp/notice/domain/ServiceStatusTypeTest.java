@@ -7,18 +7,18 @@ import org.junit.jupiter.params.provider.NullSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ServiceStatusCodeTest {
+class ServiceStatusTypeTest {
 
     @ParameterizedTest
     @EmptySource
     @NullSource
-    @DisplayName("from(): 역종코드가 존재하지 않을 경우 CODE_NOT_EXISTS를 반환한다.")
-    void 역종_코드가_존재하지_않을_경우_CODE_NOT_EXISTS를_반환한다(final String code) {
+    @DisplayName("from(): 역종코드가 존재하지 않을 경우 TYPE_UNLISTED를 반환한다.")
+    void 역종_코드가_존재하지_않을_경우_TYPE_UNLISTED를_반환한다(final String invalidServiceStatusTypeCode) {
         // given
         // when
-        final ServiceStatusCode actual = ServiceStatusCode.from(code);
+        final ServiceStatusType actual = ServiceStatusType.from(invalidServiceStatusTypeCode);
 
         // then
-        assertEquals(ServiceStatusCode.CODE_NOT_EXISTS, actual);
+        assertEquals(ServiceStatusType.TYPE_UNLISTED, actual);
     }
 }
