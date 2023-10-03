@@ -5,7 +5,7 @@ create table enterprise
 (
     id            bigint auto_increment primary key,
     name          varchar(255)  not null,
-    business_code varchar(20)   not null,
+    business_type varchar(20)   not null,
     website_url   varchar(1024) not null,
     address       varchar(1024) not null
 );
@@ -15,7 +15,7 @@ create table notice
     id                      bigint auto_increment primary key,
     title                   varchar(255)  not null,
     task                    varchar(255)  not null,
-    business_code           varchar(20)   not null,
+    business_type           varchar(20)   not null,
     welfare                 varchar(255)  not null,
     salary_code             varchar(20)   not null,
     service_address         varchar(1024) not null,

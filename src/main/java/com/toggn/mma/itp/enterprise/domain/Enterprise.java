@@ -18,8 +18,8 @@ public class Enterprise {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "business_code", length = 20, nullable = false)
-    private BusinessCode business;
+    @Column(name = "business_type", length = 20, nullable = false)
+    private BusinessType business;
 
     @Column(length = 1024, nullable = false)
     private String websiteUrl;
@@ -29,7 +29,7 @@ public class Enterprise {
 
     public Enterprise(
             final String name,
-            final BusinessCode business,
+            final BusinessType business,
             final String websiteUrl,
             final String address
     ) {

@@ -1,6 +1,6 @@
 package com.toggn.mma.itp.notice.application;
 
-import com.toggn.mma.itp.enterprise.domain.BusinessCode;
+import com.toggn.mma.itp.enterprise.domain.BusinessType;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.notice.domain.*;
@@ -76,7 +76,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
         // given
         final Enterprise 존재하지_않는_업체 = new Enterprise(
                 "존재하지 않는 업체",
-                BusinessCode.CODE_11101,
+                BusinessType.TYPE_11101,
                 "http://website.url",
                 "존재하지 않는 주소"
         );

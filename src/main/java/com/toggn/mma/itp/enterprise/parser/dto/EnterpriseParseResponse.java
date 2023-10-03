@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public record EnterpriseParseResponse(
         String name,
-        String businessCode,
+        String businessTypeCode,
         String websiteUrl,
         String address
 ) {

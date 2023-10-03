@@ -2,7 +2,7 @@ package com.toggn.mma.itp.enterprise.application;
 
 import com.toggn.mma.itp.client.EnterpriseClient;
 import com.toggn.mma.itp.client.OpenAPIClient;
-import com.toggn.mma.itp.enterprise.domain.BusinessCode;
+import com.toggn.mma.itp.enterprise.domain.BusinessType;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.enterprise.parser.EnterpriseParser;
@@ -44,11 +44,11 @@ public class EnterpriseCommandService {
 
     private Enterprise convertToEnterpriseEntity(final EnterpriseParseResponse response) {
         final String name = response.name();
-        final BusinessCode businessCode = BusinessCode.from(response.businessCode());
+        final BusinessType businessType = BusinessType.from(response.businessTypeCode());
         final String websiteUrl = response.websiteUrl();
         final String address = response.address();
 
-        return new Enterprise(name, businessCode, websiteUrl, address);
+        return new Enterprise(name, businessType, websiteUrl, address);
     }
 
     private Set<EnterpriseParseResponse> excludeExistsEnterprise(

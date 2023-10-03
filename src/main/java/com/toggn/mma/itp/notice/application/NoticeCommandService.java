@@ -2,7 +2,7 @@ package com.toggn.mma.itp.notice.application;
 
 import com.toggn.mma.itp.client.NoticeClient;
 import com.toggn.mma.itp.client.OpenAPIClient;
-import com.toggn.mma.itp.enterprise.domain.BusinessCode;
+import com.toggn.mma.itp.enterprise.domain.BusinessType;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.notice.domain.*;
@@ -67,7 +67,7 @@ public class NoticeCommandService {
     private Notice convertToNoticeEntity(final NoticeParseResponse response, final Long enterpriseId) {
         final String title = response.title();
         final String task = response.task();
-        final BusinessCode business = BusinessCode.from(response.businessCode());
+        final BusinessType business = BusinessType.from(response.businessCode());
         final String welfare = response.welfare();
         final SalaryCode salary = SalaryCode.from(response.salaryCode());
         final String serviceAddress = response.serviceAddress();

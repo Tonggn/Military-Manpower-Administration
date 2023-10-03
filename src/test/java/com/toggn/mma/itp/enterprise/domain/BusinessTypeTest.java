@@ -5,10 +5,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
-import static com.toggn.mma.itp.enterprise.domain.BusinessCode.CODE_NOT_EXISTS;
+import static com.toggn.mma.itp.enterprise.domain.BusinessType.TYPE_UNLISTED;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BusinessCodeTest {
+class BusinessTypeTest {
 
     @ParameterizedTest
     @EmptySource
@@ -17,9 +17,9 @@ class BusinessCodeTest {
     void 업종_코드가_존재하지_않을_경우_CODE_NOT_EXISTS를_반환한다(final String notExistsCode) {
         // given
         // when
-        final BusinessCode actual = BusinessCode.from(notExistsCode);
+        final BusinessType actual = BusinessType.from(notExistsCode);
 
         // then
-        assertThat(actual).isEqualTo(CODE_NOT_EXISTS);
+        assertThat(actual).isEqualTo(TYPE_UNLISTED);
     }
 }

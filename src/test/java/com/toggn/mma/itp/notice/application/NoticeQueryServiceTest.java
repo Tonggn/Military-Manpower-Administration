@@ -1,6 +1,6 @@
 package com.toggn.mma.itp.notice.application;
 
-import com.toggn.mma.itp.enterprise.domain.BusinessCode;
+import com.toggn.mma.itp.enterprise.domain.BusinessType;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.notice.application.dto.NoticeFilterRequest;
@@ -37,12 +37,12 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
     @BeforeEach
     void setUp() {
-        enterprise1 = enterpriseRepository.save(new Enterprise("업체1", BusinessCode.CODE_11111, "http://업체1.url", "업체 1 주소지"));
-        enterprise2 = enterpriseRepository.save(new Enterprise("업체2", BusinessCode.CODE_11101, "http://업체2.url", "업체 2 주소지"));
+        enterprise1 = enterpriseRepository.save(new Enterprise("업체1", BusinessType.TYPE_11111, "http://업체1.url", "업체 1 주소지"));
+        enterprise2 = enterpriseRepository.save(new Enterprise("업체2", BusinessType.TYPE_11101, "http://업체2.url", "업체 2 주소지"));
 
         final NoticeDate noticeDate = new NoticeDate(LocalDate.of(2021, 9, 23), LocalDate.of(2021, 9, 23), LocalDate.of(2021, 9, 30));
-        notice1 = noticeRepository.save(new Notice("공고 제목1", "업무 내용1", BusinessCode.CODE_11111, "복리후생 내용", SalaryCode.CODE16, "근무지 주소", "최종학력", "경력 구분", ServiceStatusCode.CODE002, AgentCode.CODE1, enterprise1.getId(), 20230923L, noticeDate));
-        notice2 = noticeRepository.save(new Notice("공고 제목2", "업무 내용2", BusinessCode.CODE_11101, "복리후생 내용",
+        notice1 = noticeRepository.save(new Notice("공고 제목1", "업무 내용1", BusinessType.TYPE_11111, "복리후생 내용", SalaryCode.CODE16, "근무지 주소", "최종학력", "경력 구분", ServiceStatusCode.CODE002, AgentCode.CODE1, enterprise1.getId(), 20230923L, noticeDate));
+        notice2 = noticeRepository.save(new Notice("공고 제목2", "업무 내용2", BusinessType.TYPE_11101, "복리후생 내용",
                 SalaryCode.CODE16, "근무지 주소", "최종학력", "경력 구분", ServiceStatusCode.CODE002,
                 AgentCode.CODE1, enterprise2.getId(), 20230923L, noticeDate));
     }

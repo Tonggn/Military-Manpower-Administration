@@ -1,6 +1,6 @@
 package com.toggn.mma.itp.enterprise.application;
 
-import com.toggn.mma.itp.enterprise.domain.BusinessCode;
+import com.toggn.mma.itp.enterprise.domain.BusinessType;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.enterprise.parser.dto.EnterpriseParseResponse;
@@ -60,7 +60,7 @@ class EnterpriseCommandServiceTest extends SpringBootTestHelper {
 
         final EnterpriseParseResponse enterpriseResponse = new EnterpriseParseResponse(
                 enterprise.getName(),
-                BusinessCode.CODE_11101.getCode(),
+                BusinessType.TYPE_11101.getCode(),
                 "http://another-website.com",
                 "another address"
         );

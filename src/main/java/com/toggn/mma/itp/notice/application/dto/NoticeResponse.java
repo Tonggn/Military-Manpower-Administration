@@ -28,7 +28,7 @@ public record NoticeResponse(
         return new NoticeResponse(
                 notice.getTitle(),
                 notice.getTask(),
-                notice.getBusiness().getType(),
+                notice.getBusiness().getName(),
                 notice.getWelfare(),
                 notice.getSalary().getMinimumSalary(),
                 notice.getSalary().getMaximumSalary(),
@@ -55,7 +55,7 @@ public record NoticeResponse(
         public static EnterpriseResponse from(final Enterprise enterprise) {
             return new EnterpriseResponse(
                     enterprise.getName(),
-                    enterprise.getBusiness().getType(),
+                    enterprise.getBusiness().getName(),
                     enterprise.getWebsiteUrl(),
                     enterprise.getAddress()
             );

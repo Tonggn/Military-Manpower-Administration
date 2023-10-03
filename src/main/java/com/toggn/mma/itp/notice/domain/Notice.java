@@ -1,7 +1,7 @@
 package com.toggn.mma.itp.notice.domain;
 
 import com.toggn.mma.base.BaseDatetimeEntity;
-import com.toggn.mma.itp.enterprise.domain.BusinessCode;
+import com.toggn.mma.itp.enterprise.domain.BusinessType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,8 +23,8 @@ public class Notice extends BaseDatetimeEntity {
     private String task;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "business_code", length = 20, nullable = false)
-    private BusinessCode business;
+    @Column(name = "business_type", length = 20, nullable = false)
+    private BusinessType business;
 
     @Column(nullable = false)
     private String welfare;
@@ -62,7 +62,7 @@ public class Notice extends BaseDatetimeEntity {
     public Notice(
             final String title,
             final String task,
-            final BusinessCode business,
+            final BusinessType business,
             final String welfare,
             final SalaryCode salary,
             final String serviceAddress,

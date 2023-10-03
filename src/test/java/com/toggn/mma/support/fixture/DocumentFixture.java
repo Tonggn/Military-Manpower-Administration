@@ -18,7 +18,7 @@ public class DocumentFixture {
                         Arrays.stream(responses)
                                 .map(response -> "<item>" +
                                         "<eopcheNm>" + response.name() + "</eopcheNm>" +
-                                        "<eopjongGbcd>" + response.businessCode() + "</eopjongGbcd>" +
+                                        "<eopjongGbcd>" + response.businessTypeCode() + "</eopjongGbcd>" +
                                         "<hmpgAddr>" + response.websiteUrl() + "</hmpgAddr>" +
                                         "<eopcheAddr>" + response.address() + "</eopcheAddr>" +
                                         "</item>")
