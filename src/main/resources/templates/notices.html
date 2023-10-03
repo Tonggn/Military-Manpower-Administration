@@ -87,9 +87,9 @@
 
             <li class="page-item"
                 th:classappend="${page == notices.getNumber()} ? 'active'"
-                th:each="page: ${#numbers.sequence(0, notices.getTotalPages()-1)}"
-                th:if="${page >= notices.getNumber()-5 and page <= notices.getNumber()+5}">
-                <a class="page-link" th:href="@{/notices(page=${page})}" th:text="${page}"></a>
+                th:each="page: ${#numbers.sequence(0, T(java.lang.Math).max(notices.getTotalPages()-1,0))}"
+                th:if="${page >= notices.getNumber()-4 and page <= notices.getNumber()+4}">
+                <a class="page-link" th:href="@{/notices(page=${page})}" th:text="${page+1}"></a>
             </li>
 
             <li class="page-item" th:classappend="${notices.isLast()} ? 'disabled'">
