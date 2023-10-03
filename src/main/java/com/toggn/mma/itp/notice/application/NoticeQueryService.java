@@ -2,14 +2,14 @@ package com.toggn.mma.itp.notice.application;
 
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
+import com.toggn.mma.itp.notice.application.dto.NoticeFilterRequest;
 import com.toggn.mma.itp.notice.application.dto.NoticeResponse;
 import com.toggn.mma.itp.notice.domain.Notice;
 import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
+import com.toggn.mma.itp.notice.domain.repository.NoticeSpecification;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +27,10 @@ public class NoticeQueryService {
     private final NoticeRepository noticeRepository;
     private final EnterpriseRepository enterpriseRepository;
 
-    public Page<NoticeResponse> findAllNotices(final int pageNum) {
-        final Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE);
-        final Page<Notice> notices = noticeRepository.findAllByOrderByCreatedAtDesc(pageable);
+    public Page<NoticeResponse> findAllNotices(final int pageNum, final NoticeFilterRequest noticeFilterRequest) {
+        final Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
+        final Specification<Notice> specification = createFilterSpecification(noticeFilterRequest);
+        final Page<Notice> notices = noticeRepository.findAll(specification, pageable);
 
         final Map<Long, Enterprise> enterpriseMap = getLongEnterpriseMap(notices);
 
@@ -38,6 +39,16 @@ public class NoticeQueryService {
                 .toList();
 
         return new PageImpl<>(noticeResponses, pageable, notices.getTotalElements());
+    }
+
+    private Specification<Notice> createFilterSpecification(final NoticeFilterRequest noticeFilterRequest) {
+        Specification<Notice> specification = Specification.where(null);
+
+        if (noticeFilterRequest.isValidKeyword()) {
+            specification = specification.and(NoticeSpecification.keywordContains(noticeFilterRequest.keyword()));
+        }
+
+        return specification;
     }
 
     private Map<Long, Enterprise> getLongEnterpriseMap(final Page<Notice> notices) {

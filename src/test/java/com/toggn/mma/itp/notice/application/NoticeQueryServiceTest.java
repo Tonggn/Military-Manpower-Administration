@@ -3,6 +3,7 @@ package com.toggn.mma.itp.notice.application;
 import com.toggn.mma.itp.enterprise.domain.BusinessCode;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
+import com.toggn.mma.itp.notice.application.dto.NoticeFilterRequest;
 import com.toggn.mma.itp.notice.application.dto.NoticeResponse;
 import com.toggn.mma.itp.notice.domain.*;
 import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
@@ -55,8 +56,10 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                 NoticeResponse.from(notice1, enterprise1)
         );
 
+        final NoticeFilterRequest noticeFilterRequest = new NoticeFilterRequest(null);
+
         // when
-        final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0).getContent();
+        final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, noticeFilterRequest).getContent();
 
         // then
         assertThat(actual)
@@ -80,8 +83,10 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
         noticeRepository.saveAll(notices);
 
+        final NoticeFilterRequest noticeFilterRequest = new NoticeFilterRequest(null);
+
         // when
-        final Page<NoticeResponse> actual = noticeQueryService.findAllNotices(0);
+        final Page<NoticeResponse> actual = noticeQueryService.findAllNotices(0, noticeFilterRequest);
 
         // then
         assertThat(actual.getContent()).hasSize(20);
