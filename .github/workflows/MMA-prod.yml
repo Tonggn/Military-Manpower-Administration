@@ -2,6 +2,10 @@ name: MMA prod Ci/Cd
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -44,16 +48,16 @@ jobs:
 
     steps:
       - name: Remove old jar file
-        run: rm -rf /home/pi/mma/*.jar
+        run: rm -rf /home/ubuntu/mma/*.jar
 
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.1
         with:
           name: mma.jar
-          path: /home/pi/mma
+          path: /home/ubuntu/mma
 
       - name: Add Permission
-        run: chmod +x /home/pi/mma/*.jar
+        run: chmod +x /home/ubuntu/mma/*.jar
 
       - name: Run sh
-        run: sudo /home/pi/mma/run.sh
+        run: sudo /home/ubuntu/mma/run.sh
