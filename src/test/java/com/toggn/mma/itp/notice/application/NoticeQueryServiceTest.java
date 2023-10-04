@@ -16,13 +16,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -70,7 +73,6 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("한 페이지에 20개의 공고만 보여준다.")
         void 페이징_테스트() {
             // given
-            noticeRepository.saveAll(notices);
 
             // when
             final Page<NoticeResponse> actual = noticeQueryService.findAllNotices(0, nothingFilterRequest);
@@ -187,6 +189,84 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
             // when
             final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, keywordFilterRequest).getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+    }
+
+    @Nested
+    @DisplayName("findAllNotices(): 역종 필터링 테스트")
+    class 역종_필터링_테스트 {
+
+        private Enterprise enterprise;
+        private List<Notice> notices;
+
+        static Stream<ServiceStatusType> 유효_역종_필터링_테스트() {
+            return ServiceStatusType.validValues().stream();
+        }
+
+        static Stream<ServiceStatusType> 유효하지_않은_역종_필터링_테스트() {
+            return Stream.of(ServiceStatusType.TYPE_UNLISTED, null);
+        }
+
+        @BeforeEach
+        void setUp() {
+            enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
+
+            notices = Arrays.stream(ServiceStatusType.values())
+                    .map(serviceStatusType -> NoticeFixture.getNotice(
+                                    enterprise,
+                                    SalaryType.TYPE_08,
+                                    serviceStatusType,
+                                    AgentType.TYPE_1,
+                                    LocalDate.of(2024, 1, 1),
+                                    LocalDate.of(2024, 1, 1),
+                                    LocalDate.of(2024, 2, 1)
+                            )
+                    )
+                    .toList();
+            noticeRepository.saveAll(notices);
+        }
+
+        @ParameterizedTest
+        @MethodSource
+        @DisplayName("역종에 해당하는 공고만 조회한다.")
+        void 유효_역종_필터링_테스트(final ServiceStatusType serviceStatusType) {
+            // given
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null);
+
+            final List<NoticeResponse> expect = notices.stream()
+                    .filter(notice -> notice.getServiceStatusType().equals(serviceStatusType))
+                    .map(notice -> NoticeResponse.from(notice, enterprise))
+                    .toList();
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @ParameterizedTest
+        @MethodSource
+        @DisplayName("유효하지 않은 역종일 경우 모든 역종의 공고를 조회한다.")
+        void 유효하지_않은_역종_필터링_테스트(final ServiceStatusType serviceStatusType) {
+            // given
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null);
+
+            final List<NoticeResponse> expect = notices.stream()
+                    .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+                    .map(notice -> NoticeResponse.from(notice, enterprise))
+                    .toList();
+
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
 
             // then
             assertThat(actual)
