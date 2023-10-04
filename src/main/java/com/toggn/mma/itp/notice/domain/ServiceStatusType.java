@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -21,5 +22,15 @@ public enum ServiceStatusType {
                 .filter(value -> value.code.equals(code))
                 .findFirst()
                 .orElse(TYPE_UNLISTED);
+    }
+
+    public static List<ServiceStatusType> validValues() {
+        return Arrays.stream(values())
+                .filter(value -> !value.equals(TYPE_UNLISTED))
+                .toList();
+    }
+
+    public boolean isValid() {
+        return !this.equals(TYPE_UNLISTED);
     }
 }

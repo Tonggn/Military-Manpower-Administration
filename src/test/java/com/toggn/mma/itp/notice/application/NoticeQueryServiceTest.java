@@ -56,7 +56,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                 NoticeResponse.from(notice1, enterprise1)
         );
 
-        final NoticeFilterRequest noticeFilterRequest = new NoticeFilterRequest(null);
+        final NoticeFilterRequest noticeFilterRequest = new NoticeFilterRequest(null, null, null);
 
         // when
         final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, noticeFilterRequest).getContent();
@@ -83,7 +83,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
         noticeRepository.saveAll(notices);
 
-        final NoticeFilterRequest noticeFilterRequest = new NoticeFilterRequest(null);
+        final NoticeFilterRequest noticeFilterRequest = new NoticeFilterRequest(null, null, null);
 
         // when
         final Page<NoticeResponse> actual = noticeQueryService.findAllNotices(0, noticeFilterRequest);

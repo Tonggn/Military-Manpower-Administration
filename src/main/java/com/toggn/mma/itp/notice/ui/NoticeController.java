@@ -2,6 +2,8 @@ package com.toggn.mma.itp.notice.ui;
 
 import com.toggn.mma.itp.notice.application.NoticeQueryService;
 import com.toggn.mma.itp.notice.application.dto.NoticeFilterRequest;
+import com.toggn.mma.itp.notice.domain.AgentType;
+import com.toggn.mma.itp.notice.domain.ServiceStatusType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +25,9 @@ public class NoticeController {
             final NoticeFilterRequest noticeFilterRequest
     ) {
         model.addAttribute("notices", noticeQueryService.findAllNotices(pageNum, noticeFilterRequest));
-        model.addAttribute("keyword", noticeFilterRequest.keyword());
+        model.addAttribute("noticeFilterRequest", noticeFilterRequest);
+        model.addAttribute("serviceTypes", ServiceStatusType.validValues());
+        model.addAttribute("agentTypes", AgentType.validValues());
 
         return "notices";
     }

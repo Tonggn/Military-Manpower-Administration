@@ -1,6 +1,8 @@
 package com.toggn.mma.itp.notice.domain.repository;
 
+import com.toggn.mma.itp.notice.domain.AgentType;
 import com.toggn.mma.itp.notice.domain.Notice;
+import com.toggn.mma.itp.notice.domain.ServiceStatusType;
 import org.springframework.data.jpa.domain.Specification;
 
 public class NoticeSpecification {
@@ -10,5 +12,14 @@ public class NoticeSpecification {
 
     public static Specification<Notice> keywordContains(final String keyword) {
         return (root, query, builder) -> builder.like(root.get("title"), "%" + keyword + "%");
+    }
+
+    public static Specification<Notice> serviceStatusTypeEquals(final ServiceStatusType serviceStatusType) {
+        return (root, query, builder) -> builder.equal(root.get("serviceStatusType"), serviceStatusType);
+    }
+
+
+    public static Specification<Notice> agentTypeEquals(final AgentType agentType) {
+        return (root, query, builder) -> builder.equal(root.get("agentType"), agentType);
     }
 }

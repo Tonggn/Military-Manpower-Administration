@@ -16,7 +16,30 @@
         <tr>
             <th scope="row" style="width: 15%">공고 제목</th>
             <td colspan="3" style="width: 85%">
-                <input class="form-control" id="keyword" placeholder="검색어를 입력하세요" th:value="${keyword}" type="text">
+                <input class="form-control" id="keyword" placeholder="검색어를 입력하세요"
+                       th:value="${noticeFilterRequest.keyword()}" type="text">
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="serviceStatusType">역종 분류</label></th>
+            <td>
+                <select class="form-select" id="serviceStatusType" name="serviceStatusType">
+                    <option value="">=선택=</option>
+                    <div th:each="serviceType:${serviceTypes}">
+                        <option th:selected="${noticeFilterRequest.serviceStatusType() == serviceType}"
+                                th:text="${serviceType.name}" th:value="${serviceType.code}"></option>
+                    </div>
+                </select>
+            </td>
+            <th scope="row"><label for="agentType">요원 분류</label></th>
+            <td>
+                <select class="form-select" id="agentType" name="agentType">
+                    <option value="">=선택=</option>
+                    <div th:each="agentType:${agentTypes}">
+                        <option th:selected="${noticeFilterRequest.agentType() == agentType}"
+                                th:text="${agentType.name}" th:value="${agentType.code}"></option>
+                    </div>
+                </select>
             </td>
         </tr>
         </tbody>
@@ -55,7 +78,7 @@
             </tr>
             <tr>
                 <th scope="row" style="width: 15%">고용형태</th>
-                <td style="width: 35%" th:text="${notice.serviceStatusType()()}"></td>
+                <td style="width: 35%" th:text="${notice.serviceStatusType()}"></td>
                 <th scope="row" style="width: 15%">요원형태</th>
                 <td style="width: 35%" th:text="${notice.agentType()}"></td>
             </tr>
@@ -114,9 +137,13 @@
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("searchButton").addEventListener("click", function () {
             var keyword = document.getElementById("keyword").value;
+            var serviceStatusType = document.getElementById("serviceStatusType").value;
+            var agentType = document.getElementById("agentType").value;
 
             var queryString = "?";
-            queryString += "keyword=" + keyword;
+            queryString += "keyword=" + keyword + "&";
+            queryString += "serviceStatusType=" + serviceStatusType + "&";
+            queryString += "agentType=" + agentType;
 
             if (queryString !== "?") {
                 window.location.href = window.location.pathname + queryString;
