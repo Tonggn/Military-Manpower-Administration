@@ -274,4 +274,82 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                     .isEqualTo(expect);
         }
     }
+
+    @Nested
+    @DisplayName("findAllNotices(): 요원 필터링 테스트")
+    class 요원_필터링_테스트 {
+
+        private Enterprise enterprise;
+        private List<Notice> notices;
+
+        static Stream<AgentType> 유효_요원_필터링_테스트() {
+            return AgentType.validValues().stream();
+        }
+
+        static Stream<AgentType> 유효하지_않은_요원_필터링_테스트() {
+            return Stream.of(AgentType.TYPE_UNLISTED, null);
+        }
+
+        @BeforeEach
+        void setUp() {
+            enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
+
+            notices = Arrays.stream(AgentType.values())
+                    .map(agentType -> NoticeFixture.getNotice(
+                                    enterprise,
+                                    SalaryType.TYPE_08,
+                                    ServiceStatusType.TYPE_002,
+                                    agentType,
+                                    LocalDate.of(2024, 1, 1),
+                                    LocalDate.of(2024, 1, 1),
+                                    LocalDate.of(2024, 2, 1)
+                            )
+                    )
+                    .toList();
+            noticeRepository.saveAll(notices);
+        }
+
+        @ParameterizedTest
+        @MethodSource
+        @DisplayName("요원 분류에 해당하는 공고만 조회한다.")
+        void 유효_요원_필터링_테스트(final AgentType agentType) {
+            // given
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType);
+
+            final List<NoticeResponse> expect = notices.stream()
+                    .filter(notice -> notice.getAgentType().equals(agentType))
+                    .map(notice -> NoticeResponse.from(notice, enterprise))
+                    .toList();
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @ParameterizedTest
+        @MethodSource
+        @DisplayName("유효하지 않은 요원 분류일 경우 모든 역종의 공고를 조회한다.")
+        void 유효하지_않은_요원_필터링_테스트(final AgentType agentType) {
+            // given
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType);
+
+            final List<NoticeResponse> expect = notices.stream()
+                    .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+                    .map(notice -> NoticeResponse.from(notice, enterprise))
+                    .toList();
+
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+    }
 }
