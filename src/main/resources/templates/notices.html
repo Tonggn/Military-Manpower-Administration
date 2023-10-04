@@ -112,7 +112,7 @@
                 th:classappend="${page == notices.getNumber()} ? 'active'"
                 th:each="page: ${#numbers.sequence(0, T(java.lang.Math).max(notices.getTotalPages()-1,0))}"
                 th:if="${page >= notices.getNumber()-4 and page <= notices.getNumber()+4}">
-                <a class="page-link" th:href="@{/notices(page=${page})}" th:text="${page+1}"></a>
+                <a class="page-link" th:text="${page+1}" th:value="${page}"></a>
             </li>
 
             <li class="page-item" th:classappend="${notices.isLast()} ? 'disabled'">
@@ -136,11 +136,11 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("searchButton").addEventListener("click", function () {
-            var keyword = document.getElementById("keyword").value;
-            var serviceStatusType = document.getElementById("serviceStatusType").value;
-            var agentType = document.getElementById("agentType").value;
+            const keyword = document.getElementById("keyword").value;
+            const serviceStatusType = document.getElementById("serviceStatusType").value;
+            const agentType = document.getElementById("agentType").value;
 
-            var queryString = "?";
+            let queryString = "?";
             queryString += "keyword=" + keyword + "&";
             queryString += "serviceStatusType=" + serviceStatusType + "&";
             queryString += "agentType=" + agentType;
@@ -149,6 +149,26 @@
                 window.location.href = window.location.pathname + queryString;
             }
         });
+
+        const page_elements = document.getElementsByClassName("page-link");
+        Array.from(page_elements).forEach(function (element) {
+            element.addEventListener('click', function () {
+                const page = element.getAttribute('value');
+                const keyword = document.getElementById("keyword").value;
+                const serviceStatusType = document.getElementById("serviceStatusType").value;
+                const agentType = document.getElementById("agentType").value;
+
+                let queryString = "?";
+                queryString += "page=" + page + "&";
+                queryString += "keyword=" + keyword + "&";
+                queryString += "serviceStatusType=" + serviceStatusType + "&";
+                queryString += "agentType=" + agentType;
+
+                if (queryString !== "?") {
+                    window.location.href = window.location.pathname + queryString;
+                }
+            })
+        })
     });
 </script>
 </body>
