@@ -35,7 +35,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
 
     @BeforeEach
     void setUp() {
-        enterprise = enterpriseRepository.save(EnterpriseFixture.enterprise1);
+        enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
 
         newNotice = getNotice(
                 enterprise,

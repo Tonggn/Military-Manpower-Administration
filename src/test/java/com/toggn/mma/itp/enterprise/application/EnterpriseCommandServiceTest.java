@@ -29,7 +29,7 @@ class EnterpriseCommandServiceTest extends SpringBootTestHelper {
 
     @BeforeEach
     void setUp() {
-        enterprise = EnterpriseFixture.enterprise1;
+        enterprise = EnterpriseFixture.ENTERPRISE_1;
     }
 
     @Test
