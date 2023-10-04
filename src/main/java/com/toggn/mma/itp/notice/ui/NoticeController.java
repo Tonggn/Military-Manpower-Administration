@@ -1,5 +1,6 @@
 package com.toggn.mma.itp.notice.ui;
 
+import com.toggn.mma.itp.enterprise.domain.BusinessType;
 import com.toggn.mma.itp.notice.application.NoticeQueryService;
 import com.toggn.mma.itp.notice.application.dto.NoticeFilterRequest;
 import com.toggn.mma.itp.notice.domain.AgentType;
@@ -28,6 +29,7 @@ public class NoticeController {
         model.addAttribute("noticeFilterRequest", noticeFilterRequest);
         model.addAttribute("serviceTypes", ServiceStatusType.validValues());
         model.addAttribute("agentTypes", AgentType.validValues());
+        model.addAttribute("businessTypes", BusinessType.validValues());
 
         return "notices";
     }

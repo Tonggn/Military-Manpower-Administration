@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -123,5 +125,16 @@ public enum BusinessType {
                 .filter(value -> value.code.equals(code))
                 .findAny()
                 .orElse(TYPE_UNLISTED);
+    }
+
+    public static List<BusinessType> validValues() {
+        return Arrays.stream(values())
+                .filter(value -> !value.equals(TYPE_UNLISTED))
+                .sorted(Comparator.comparing(o -> o.name))
+                .toList();
+    }
+
+    public boolean isValid() {
+        return !this.equals(TYPE_UNLISTED);
     }
 }

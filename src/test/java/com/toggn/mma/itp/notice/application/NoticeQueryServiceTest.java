@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -43,7 +44,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
     @BeforeEach
     void setUp() {
-        nothingFilterRequest = new NoticeFilterRequest(null, null, null);
+        nothingFilterRequest = new NoticeFilterRequest(null, null, null, null);
     }
 
     @Nested
@@ -160,7 +161,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
             // given
             final String keyword = "키워드";
 
-            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null);
+            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null, null);
 
 
             final List<NoticeResponse> expect = List.of(NoticeResponse.from(keywordNotice, keywordEnterprise));
@@ -180,7 +181,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("키워드가 없으면 모든 공고를 조회한다.")
         void 빈_키워드_필터링_테스트(final String keyword) {
             // given
-            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null);
+            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null, null);
 
             final List<NoticeResponse> expect = List.of(
                     NoticeResponse.from(nonKeywordNotice, nonKeywordEnterprise),
@@ -236,7 +237,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("역종에 해당하는 공고만 조회한다.")
         void 유효_역종_필터링_테스트(final ServiceStatusType serviceStatusType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null, null);
 
             final List<NoticeResponse> expect = notices.stream()
                     .filter(notice -> notice.getServiceStatusType().equals(serviceStatusType))
@@ -257,7 +258,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("유효하지 않은 역종일 경우 모든 역종의 공고를 조회한다.")
         void 유효하지_않은_역종_필터링_테스트(final ServiceStatusType serviceStatusType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null, null);
 
             final List<NoticeResponse> expect = notices.stream()
                     .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
@@ -314,7 +315,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("요원 분류에 해당하는 공고만 조회한다.")
         void 유효_요원_필터링_테스트(final AgentType agentType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType, null);
 
             final List<NoticeResponse> expect = notices.stream()
                     .filter(notice -> notice.getAgentType().equals(agentType))
@@ -335,12 +336,105 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("유효하지 않은 요원 분류일 경우 모든 역종의 공고를 조회한다.")
         void 유효하지_않은_요원_필터링_테스트(final AgentType agentType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType, null);
 
             final List<NoticeResponse> expect = notices.stream()
                     .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
                     .map(notice -> NoticeResponse.from(notice, enterprise))
                     .toList();
+
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+    }
+
+    @Nested
+    @DisplayName("findAllNotices(): 업종 필터링 테스트")
+    class 업종_필터링_테스트 {
+
+        private Enterprise enterprise;
+        private List<Notice> notices;
+
+        static Stream<List<BusinessType>> 유효_업종_필터링_테스트() {
+            final List<BusinessType> items = BusinessType.validValues().stream().toList();
+
+
+            return Stream.of(
+                    items.subList(2, 5),
+                    items.subList(6, 22),
+                    items.subList(66, 70),
+                    items.subList(76, 77),
+                    items.subList(23, 35)
+            );
+        }
+
+        static Stream<List<BusinessType>> 유효하지_않은_업종_필터링_테스트() {
+            return Stream.of(
+                    Collections.emptyList(),
+                    List.of(BusinessType.TYPE_UNLISTED),
+                    null
+            );
+        }
+
+        @BeforeEach
+        void setUp() {
+            enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
+
+            notices = Arrays.stream(BusinessType.values())
+                    .map(businessType -> NoticeFixture.getNotice(
+                                    enterprise,
+                                    SalaryType.TYPE_08,
+                                    ServiceStatusType.TYPE_002,
+                                    AgentType.TYPE_1,
+                                    LocalDate.of(2024, 1, 1),
+                                    LocalDate.of(2024, 1, 1),
+                                    LocalDate.of(2024, 2, 1)
+                            )
+                    )
+                    .toList();
+            noticeRepository.saveAll(notices);
+        }
+
+        @ParameterizedTest
+        @MethodSource
+        @DisplayName("선택된 업종에 해당하는 공고만 조회한다.")
+        void 유효_업종_필터링_테스트(final List<BusinessType> businessTypes) {
+            // given
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, null, businessTypes);
+
+            final List<NoticeResponse> expect = notices.stream()
+                    .filter(notice -> businessTypes.contains(notice.getBusinessType()))
+                    .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+                    .map(notice -> NoticeResponse.from(notice, enterprise))
+                    .toList();
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @ParameterizedTest
+        @MethodSource
+        @DisplayName("유효하지 않은 업종일 경우 모든 역종의 공고를 조회한다.")
+        void 유효하지_않은_업종_필터링_테스트(final List<BusinessType> businessTypes) {
+            // given
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, null, businessTypes);
+
+            final List<NoticeResponse> expect = notices.stream()
+                    .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+                    .map(notice -> NoticeResponse.from(notice, enterprise))
+                    .toList()
+                    .subList(0, 20);
 
 
             // when

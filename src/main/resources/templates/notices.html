@@ -15,14 +15,14 @@
         <tbody>
         <tr>
             <th scope="row" style="width: 15%">공고 제목</th>
-            <td colspan="3" style="width: 85%">
+            <td colspan="5" style="width: 85%">
                 <input class="form-control" id="keyword" placeholder="검색어를 입력하세요"
                        th:value="${noticeFilterRequest.keyword()}" type="text">
             </td>
         </tr>
         <tr>
             <th scope="row"><label for="serviceStatusType">역종 분류</label></th>
-            <td>
+            <td colspan="2">
                 <select class="form-select" id="serviceStatusType" name="serviceStatusType">
                     <option value="">=선택=</option>
                     <div th:each="serviceType:${serviceTypes}">
@@ -32,7 +32,7 @@
                 </select>
             </td>
             <th scope="row"><label for="agentType">요원 분류</label></th>
-            <td>
+            <td colspan="2">
                 <select class="form-select" id="agentType" name="agentType">
                     <option value="">=선택=</option>
                     <div th:each="agentType:${agentTypes}">
@@ -40,6 +40,17 @@
                                 th:text="${agentType.name}" th:value="${agentType.code}"></option>
                     </div>
                 </select>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">업종선택</th>
+            <td colspan="5">
+                <div class="form-check form-check-inline" th:each="businessType:${businessTypes}">
+                    <input class="form-check-input" name="businessType"
+                           th:checked="${noticeFilterRequest.businessTypes != null && noticeFilterRequest.businessTypes.contains(businessType)}"
+                           th:value="${businessType.code}" type="checkbox">
+                    <label class="form-check-label" th:text="${businessType.name}"></label>
+                </div>
             </td>
         </tr>
         </tbody>
@@ -135,15 +146,22 @@
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+
         document.getElementById("searchButton").addEventListener("click", function () {
             const keyword = document.getElementById("keyword").value;
             const serviceStatusType = document.getElementById("serviceStatusType").value;
             const agentType = document.getElementById("agentType").value;
+            const selectedBusinessTypes = [];
+            document.querySelectorAll('input[name="businessType"]:checked')
+                .forEach(function (checkbox) {
+                    selectedBusinessTypes.push(checkbox.value);
+                });
 
             let queryString = "?";
             queryString += "keyword=" + keyword + "&";
             queryString += "serviceStatusType=" + serviceStatusType + "&";
-            queryString += "agentType=" + agentType;
+            queryString += "agentType=" + agentType + "&";
+            queryString += "businessTypes=" + selectedBusinessTypes.join(",");
 
             if (queryString !== "?") {
                 window.location.href = window.location.pathname + queryString;
@@ -157,12 +175,18 @@
                 const keyword = document.getElementById("keyword").value;
                 const serviceStatusType = document.getElementById("serviceStatusType").value;
                 const agentType = document.getElementById("agentType").value;
+                const selectedBusinessTypes = [];
+                document.querySelectorAll('input[name="businessType"]:checked')
+                    .forEach(function (checkbox) {
+                        selectedBusinessTypes.push(checkbox.value);
+                    });
 
                 let queryString = "?";
                 queryString += "page=" + page + "&";
                 queryString += "keyword=" + keyword + "&";
                 queryString += "serviceStatusType=" + serviceStatusType + "&";
-                queryString += "agentType=" + agentType;
+                queryString += "agentType=" + agentType + "&";
+                queryString += "businessTypes=" + selectedBusinessTypes.join(",");
 
                 if (queryString !== "?") {
                     window.location.href = window.location.pathname + queryString;
