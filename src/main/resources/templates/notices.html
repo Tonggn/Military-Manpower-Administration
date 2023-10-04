@@ -45,11 +45,12 @@
         <tr>
             <th scope="row">업종선택</th>
             <td colspan="5">
-                <div class="form-check form-check-inline" th:each="businessType:${businessTypes}">
+                <div class="form-check form-check-inline" style="width: 240px" th:each="businessType:${businessTypes}">
                     <input class="form-check-input" name="businessType"
                            th:checked="${noticeFilterRequest.businessTypes != null && noticeFilterRequest.businessTypes.contains(businessType)}"
-                           th:value="${businessType.code}" type="checkbox">
-                    <label class="form-check-label" th:text="${businessType.name}"></label>
+                           th:id="businessType + ${businessType.code}" th:value="${businessType.code}" type="checkbox">
+                    <label class="form-check-label" th:for="businessType + ${businessType.code}"
+                           th:text="${businessType.name}"></label>
                 </div>
             </td>
         </tr>
