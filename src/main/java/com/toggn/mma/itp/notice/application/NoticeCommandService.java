@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -109,6 +110,7 @@ public class NoticeCommandService {
 
         notices.stream()
                 .filter(notice -> !savedNoticeNumbers.contains(notice.getNoticeNumber()))
+                .sorted(Comparator.comparing(o -> o.getNoticeDate().getCreatedDate()))
                 .forEach(noticeRepository::save);
     }
 }

@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
 
 import static com.toggn.mma.support.fixture.DocumentFixture.noticesDocument;
 import static com.toggn.mma.support.fixture.NoticeFixture.getNotice;
@@ -68,6 +70,58 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
                 .usingRecursiveComparison()
                 .ignoringFields("id", "createdAt", "updatedAt")
                 .isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("updateAllNotices(): 공고의 생성일이 빠른 것 부터 저장한다.")
+    void 빠른_생성일순_저장_테스트() {
+        // given
+        final Notice notice_1월_1일 = getNotice(
+                enterprise,
+                SalaryType.TYPE_07,
+                ServiceStatusType.TYPE_002,
+                AgentType.TYPE_1,
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 2, 1)
+        );
+        final Notice notice_1월_2일 = getNotice(
+                enterprise,
+                SalaryType.TYPE_07,
+                ServiceStatusType.TYPE_002,
+                AgentType.TYPE_1,
+                LocalDate.of(2024, 1, 2),
+                LocalDate.of(2024, 1, 2),
+                LocalDate.of(2024, 2, 1)
+        );
+        final Notice notice_1월_3일 = getNotice(
+                enterprise,
+                SalaryType.TYPE_07,
+                ServiceStatusType.TYPE_002,
+                AgentType.TYPE_1,
+                LocalDate.of(2024, 1, 3),
+                LocalDate.of(2024, 1, 3),
+                LocalDate.of(2024, 2, 1)
+        );
+
+        final NoticeParseResponse noticeResponse1 = NoticeFixture.convertToNoticeParseResponse(notice_1월_1일, enterprise);
+        final NoticeParseResponse noticeResponse2 = NoticeFixture.convertToNoticeParseResponse(notice_1월_2일, enterprise);
+        final NoticeParseResponse noticeResponse3 = NoticeFixture.convertToNoticeParseResponse(notice_1월_3일, enterprise);
+
+        when(noticeClient.request()).thenReturn(noticesDocument(noticeResponse2, noticeResponse3, noticeResponse1));
+
+        // then
+        noticeCommandService.updateAllNotices();
+
+        // then
+        final List<Notice> actual = noticeRepository.findAll().stream()
+                .sorted(Comparator.comparing(Notice::getId))
+                .toList();
+
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "createdAt", "updatedAt")
+                .isEqualTo(List.of(notice_1월_1일, notice_1월_2일, notice_1월_3일));
     }
 
     @Test
