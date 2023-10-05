@@ -36,7 +36,7 @@ public class NoticeCommandService {
         this.openAPIClient = noticeClient;
     }
 
-    @Scheduled(cron = "0 10 10-18/2 * * *") // 매일 오전 10시 10분부터 오후 6시 10분까지 2시간마다 실행
+    @Scheduled(cron = "0 1 * * * *")
     public void updateAllNotices() {
         final Document document = openAPIClient.request();
         final List<NoticeParseResponse> noticeParseResponses = NoticeParser.parseAllNotices(document);

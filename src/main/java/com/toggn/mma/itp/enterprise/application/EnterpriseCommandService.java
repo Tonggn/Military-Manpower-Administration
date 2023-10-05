@@ -31,7 +31,7 @@ public class EnterpriseCommandService {
         this.openAPIClient = enterpriseClient;
     }
 
-    @Scheduled(cron = "0 0 10-18/2 * * *") // 매일 오전 10시부터 오후 6시까지 2시간마다 실행
+    @Scheduled(cron = "0 0 * * * *")
     public void updateAllEnterprises() {
         final Document document = openAPIClient.request();
         final Set<EnterpriseParseResponse> newEnterpriseResponses = excludeExistsEnterprise(
