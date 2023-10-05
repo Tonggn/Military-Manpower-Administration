@@ -10,6 +10,8 @@ import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
 import com.toggn.mma.itp.notice.parser.NoticeParser;
 import com.toggn.mma.itp.notice.parser.dto.NoticeParseResponse;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class NoticeCommandService {
+
+    private static final Logger log = LoggerFactory.getLogger(NoticeCommandService.class);
 
     private final EnterpriseRepository enterpriseRepository;
     private final NoticeRepository noticeRepository;
@@ -38,6 +42,7 @@ public class NoticeCommandService {
 
     @Scheduled(cron = "0 1 * * * *")
     public void updateAllNotices() {
+        log.info("start update all notices");
         final Document document = openAPIClient.request();
         final List<NoticeParseResponse> noticeParseResponses = NoticeParser.parseAllNotices(document);
         final List<Notice> notices = convertToNoticeEntities(noticeParseResponses);
@@ -49,6 +54,7 @@ public class NoticeCommandService {
 
         saveUpdatedNotices(notices, savedNotices);
         saveNewNotices(notices, savedNotices);
+        log.info("end update all notices");
     }
 
     private List<Notice> convertToNoticeEntities(final List<NoticeParseResponse> noticeParseResponses) {
