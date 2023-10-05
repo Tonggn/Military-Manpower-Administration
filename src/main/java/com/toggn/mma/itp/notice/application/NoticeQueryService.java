@@ -28,7 +28,7 @@ public class NoticeQueryService {
     private final EnterpriseRepository enterpriseRepository;
 
     public Page<NoticeResponse> findAllNotices(final int pageNum, final NoticeFilterRequest noticeFilterRequest) {
-        final Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
+        final Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "noticeDate_createdDate", "createdAt"));
         final Specification<Notice> specification = createFilterSpecification(noticeFilterRequest);
         final Page<Notice> notices = noticeRepository.findAll(specification, pageable);
 

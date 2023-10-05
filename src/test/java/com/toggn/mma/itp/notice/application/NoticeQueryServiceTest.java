@@ -52,28 +52,27 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
     class 공고_조회_테스트 {
 
         private Enterprise enterprise;
-        private List<Notice> notices;
 
         @BeforeEach
         void setUp() {
             enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
-
-            this.notices = IntStream.range(0, 25).mapToObj(i -> NoticeFixture.getNotice(
-                    enterprise,
-                    SalaryType.TYPE_08,
-                    ServiceStatusType.TYPE_002,
-                    AgentType.TYPE_1,
-                    LocalDate.of(2024, 1, 1),
-                    LocalDate.of(2024, 1, 1),
-                    LocalDate.of(2024, 2, 1)
-            )).toList();
-            noticeRepository.saveAll(notices);
         }
 
         @Test
         @DisplayName("한 페이지에 20개의 공고만 보여준다.")
         void 페이징_테스트() {
             // given
+            final List<Notice> notices = IntStream.range(0, 25).mapToObj(i -> NoticeFixture.getNotice(
+                            enterprise,
+                            SalaryType.TYPE_08,
+                            ServiceStatusType.TYPE_002,
+                            AgentType.TYPE_1,
+                            LocalDate.of(2024, 1, 1),
+                            LocalDate.of(2024, 1, 1),
+                            LocalDate.of(2024, 2, 1)
+                    ))
+                    .toList();
+            noticeRepository.saveAll(notices);
 
             // when
             final Page<NoticeResponse> actual = noticeQueryService.findAllNotices(0, nothingFilterRequest);
@@ -83,14 +82,55 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         }
 
         @Test
-        @DisplayName("모든 공고를 최근 생성일시 순으로 조회한다.")
+        @DisplayName("모든 공고를 최근 생성일 순으로 조회한다.")
         void 모든_공고_조회_테스트() {
             // given
+            final List<Notice> notices = IntStream.range(1, 10).mapToObj(i -> NoticeFixture.getNotice(
+                            enterprise,
+                            SalaryType.TYPE_08,
+                            ServiceStatusType.TYPE_002,
+                            AgentType.TYPE_1,
+                            LocalDate.of(2024, 1, i),
+                            LocalDate.of(2024, 1, i),
+                            LocalDate.of(2024, 2, 1)
+                    ))
+                    .toList();
+            noticeRepository.saveAll(notices);
+
             final List<NoticeResponse> expect = notices.stream()
                     .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
                     .map(notice -> NoticeResponse.from(notice, enterprise))
-                    .toList()
-                    .subList(0, 20);
+                    .toList();
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, nothingFilterRequest).getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @Test
+        @DisplayName("공고의 생성일이 같을 경우 최근 DB 추가 일시 순으로 조회한다.")
+        void 동일한_생성일_공고_조회_테스트() {
+            // given
+            final List<Notice> notices = IntStream.range(1, 10).mapToObj(i -> NoticeFixture.getNotice(
+                            enterprise,
+                            SalaryType.TYPE_08,
+                            ServiceStatusType.TYPE_002,
+                            AgentType.TYPE_1,
+                            LocalDate.of(2024, 1, 1),
+                            LocalDate.of(2024, 1, 1),
+                            LocalDate.of(2024, 2, 1)
+                    ))
+                    .toList();
+            noticeRepository.saveAll(notices);
+
+            final List<NoticeResponse> expect = notices.stream()
+                    .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+                    .map(notice -> NoticeResponse.from(notice, enterprise))
+                    .toList();
 
             // when
             final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, nothingFilterRequest).getContent();
