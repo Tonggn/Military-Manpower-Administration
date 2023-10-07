@@ -21,7 +21,9 @@ public class EnterpriseClient implements OpenAPIClient {
     public Document request() {
         final String url = requestUrl + "?ServiceKey=" + secretKey + "&numOfRows=" + ALL_ROWS_SIZE;
 
-        final Connection connect = Jsoup.connect(url).maxBodySize(0);
+        final Connection connect = Jsoup.connect(url)
+                .timeout(60 * 1000)
+                .maxBodySize(0);
 
         try {
             return Jsoup.parse(connect.get().html(), "", Parser.xmlParser());
