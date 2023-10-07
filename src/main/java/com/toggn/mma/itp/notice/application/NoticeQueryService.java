@@ -53,6 +53,9 @@ public class NoticeQueryService {
         if (noticeFilterRequest.isValidAgentType()) {
             specification = specification.and(NoticeSpecification.agentTypeEquals(noticeFilterRequest.agentType()));
         }
+        if (noticeFilterRequest.isValidServiceAddressKeyword()) {
+            specification = specification.and(NoticeSpecification.serviceAddressKeywordContains(noticeFilterRequest.serviceAddressKeyword()));
+        }
         if (noticeFilterRequest.isValidBusinessTypes()) {
             specification = specification.and(NoticeSpecification.businessTypesIn(noticeFilterRequest.businessTypes()));
         }

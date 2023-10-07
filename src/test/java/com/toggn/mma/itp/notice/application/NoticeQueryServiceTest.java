@@ -44,7 +44,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
     @BeforeEach
     void setUp() {
-        nothingFilterRequest = new NoticeFilterRequest(null, null, null, null);
+        nothingFilterRequest = new NoticeFilterRequest(null, null, null, null, null);
     }
 
     @Nested
@@ -201,7 +201,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
             // given
             final String keyword = "키워드";
 
-            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null, null);
+            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null, null, null);
 
 
             final List<NoticeResponse> expect = List.of(NoticeResponse.from(keywordNotice, keywordEnterprise));
@@ -221,7 +221,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("키워드가 없으면 모든 공고를 조회한다.")
         void 빈_키워드_필터링_테스트(final String keyword) {
             // given
-            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null, null);
+            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null, null, null);
 
             final List<NoticeResponse> expect = List.of(
                     NoticeResponse.from(nonKeywordNotice, nonKeywordEnterprise),
@@ -277,7 +277,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("역종에 해당하는 공고만 조회한다.")
         void 유효_역종_필터링_테스트(final ServiceStatusType serviceStatusType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null, null, null);
 
             final List<NoticeResponse> expect = notices.stream()
                     .filter(notice -> notice.getServiceStatusType().equals(serviceStatusType))
@@ -298,7 +298,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("유효하지 않은 역종일 경우 모든 역종의 공고를 조회한다.")
         void 유효하지_않은_역종_필터링_테스트(final ServiceStatusType serviceStatusType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null, null, null);
 
             final List<NoticeResponse> expect = notices.stream()
                     .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
@@ -355,7 +355,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("요원 분류에 해당하는 공고만 조회한다.")
         void 유효_요원_필터링_테스트(final AgentType agentType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType, null, null);
 
             final List<NoticeResponse> expect = notices.stream()
                     .filter(notice -> notice.getAgentType().equals(agentType))
@@ -376,7 +376,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("유효하지 않은 요원 분류일 경우 모든 역종의 공고를 조회한다.")
         void 유효하지_않은_요원_필터링_테스트(final AgentType agentType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType, null, null);
 
             final List<NoticeResponse> expect = notices.stream()
                     .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
@@ -446,7 +446,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("선택된 업종에 해당하는 공고만 조회한다.")
         void 유효_업종_필터링_테스트(final List<BusinessType> businessTypes) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, null, businessTypes);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, null, null, businessTypes);
 
             final List<NoticeResponse> expect = notices.stream()
                     .filter(notice -> businessTypes.contains(notice.getBusinessType()))
@@ -468,7 +468,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("유효하지 않은 업종일 경우 모든 역종의 공고를 조회한다.")
         void 유효하지_않은_업종_필터링_테스트(final List<BusinessType> businessTypes) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, null, businessTypes);
+            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, null, null, businessTypes);
 
             final List<NoticeResponse> expect = notices.stream()
                     .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
@@ -479,6 +479,101 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
             // when
             final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+    }
+
+    @Nested
+    @DisplayName("findAllNotices(): 근무지 검색 테스트")
+    class 근무지_검색_테스트 {
+
+        private String keyword;
+        private Notice keywordNotice;
+        private Notice nonKeywordNotice;
+        private Enterprise keywordEnterprise;
+        private Enterprise nonKeywordEnterprise;
+
+        @BeforeEach
+        void setUp() {
+            keyword = "키워드";
+            keywordEnterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
+            nonKeywordEnterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_2);
+
+            keywordNotice = noticeRepository.save(
+                    new Notice(
+                            "title",
+                            "task",
+                            BusinessType.TYPE_11000,
+                            "welfare",
+                            SalaryType.TYPE_08,
+                            "prefix" + keyword + "suffix",
+                            "highestEducation",
+                            "experienceDivision",
+                            ServiceStatusType.TYPE_002,
+                            AgentType.TYPE_1,
+                            keywordEnterprise.getId(),
+                            123L,
+                            new NoticeDate(
+                                    LocalDate.of(2024, 1, 1),
+                                    LocalDate.of(2024, 1, 1),
+                                    LocalDate.of(2024, 2, 1)
+                            )
+                    )
+            );
+            noticeRepository.save(keywordNotice);
+
+            nonKeywordNotice = noticeRepository.save(
+                    NoticeFixture.getNotice(
+                            nonKeywordEnterprise,
+                            SalaryType.TYPE_08,
+                            ServiceStatusType.TYPE_002,
+                            AgentType.TYPE_1,
+                            LocalDate.of(2024, 1, 1),
+                            LocalDate.of(2024, 1, 1),
+                            LocalDate.of(2024, 2, 1)
+                    )
+            );
+            noticeRepository.save(nonKeywordNotice);
+        }
+
+        @Test
+        @DisplayName("근무지에 키워드가 포함된 공고만 조회한다.")
+        void 근무지_유효_키워드_검색_테스트() {
+            // given
+            final String keyword = "키워드";
+
+            final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequest(null, null, null, keyword, null);
+
+            final List<NoticeResponse> expect = List.of(NoticeResponse.from(keywordNotice, keywordEnterprise));
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceAddressFilter).getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @EmptySource
+        @DisplayName("유효하지 않은 키워드 입력시 모든 공고를 조회한다.")
+        void 근무지_유효하지_않은_키워드_검색_테스트(final String keyword) {
+            // given
+            final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequest(null, null, null, keyword, null);
+
+            final List<NoticeResponse> expect = List.of(
+                    NoticeResponse.from(nonKeywordNotice, nonKeywordEnterprise),
+                    NoticeResponse.from(keywordNotice, keywordEnterprise)
+            );
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceAddressFilter).getContent();
 
             // then
             assertThat(actual)
