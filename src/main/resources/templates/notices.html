@@ -56,6 +56,13 @@
             </td>
         </tr>
         <tr>
+            <th scope="row" style="width: 15%">근무지 검색</th>
+            <td colspan="5" style="width: 85%">
+                <input class="form-control" id="serviceAddressKeyword" placeholder="검색어를 입력하세요"
+                       th:value="${noticeFilterRequest.serviceAddressKeyword()}" type="text">
+            </td>
+        </tr>
+        <tr>
             <th scope="row">업종선택</th>
             <td colspan="5">
                 <div class="collapse" id="collapseBusinessType">
@@ -174,6 +181,7 @@
             const keyword = document.getElementById("keyword").value;
             const serviceStatusType = document.getElementById("serviceStatusType").value;
             const agentType = document.getElementById("agentType").value;
+            const serviceAddressKeyword = document.getElementById("serviceAddressKeyword").value;
             const selectedBusinessTypes = [];
             document.querySelectorAll('input[name="businessType"]:checked')
                 .forEach(function (checkbox) {
@@ -184,6 +192,7 @@
             queryString += "keyword=" + keyword + "&";
             queryString += "serviceStatusType=" + serviceStatusType + "&";
             queryString += "agentType=" + agentType + "&";
+            queryString += "serviceAddressKeyword=" + serviceAddressKeyword + "&";
             queryString += "businessTypes=" + selectedBusinessTypes.join(",");
 
             if (queryString !== "?") {
@@ -198,6 +207,7 @@
                 const keyword = document.getElementById("keyword").value;
                 const serviceStatusType = document.getElementById("serviceStatusType").value;
                 const agentType = document.getElementById("agentType").value;
+                const serviceAddressKeyword = document.getElementById("serviceAddressKeyword").value;
                 const selectedBusinessTypes = [];
                 document.querySelectorAll('input[name="businessType"]:checked')
                     .forEach(function (checkbox) {
@@ -209,6 +219,7 @@
                 queryString += "keyword=" + keyword + "&";
                 queryString += "serviceStatusType=" + serviceStatusType + "&";
                 queryString += "agentType=" + agentType + "&";
+                queryString += "serviceAddressKeyword=" + serviceAddressKeyword + "&";
                 queryString += "businessTypes=" + selectedBusinessTypes.join(",");
 
                 if (queryString !== "?") {

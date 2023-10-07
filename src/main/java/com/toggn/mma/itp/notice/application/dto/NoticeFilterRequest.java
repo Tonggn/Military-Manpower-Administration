@@ -11,6 +11,7 @@ public record NoticeFilterRequest(
         @RequestParam(value = "keyword", defaultValue = "") String keyword,
         @RequestParam(value = "serviceStatusType", defaultValue = "") ServiceStatusType serviceStatusType,
         @RequestParam(value = "agentType", defaultValue = "") AgentType agentType,
+        @RequestParam(value = "serviceAddressKeyword", defaultValue = "") String serviceAddressKeyword,
         @RequestParam(value = "businessTypes", defaultValue = "") List<BusinessType> businessTypes
 ) {
 
@@ -18,13 +19,16 @@ public record NoticeFilterRequest(
         return keyword != null && !keyword.isBlank();
     }
 
-
     public boolean isValidServiceType() {
         return serviceStatusType != null && serviceStatusType.isValid();
     }
 
     public boolean isValidAgentType() {
         return agentType != null && agentType.isValid();
+    }
+
+    public boolean isValidServiceAddressKeyword() {
+        return serviceAddressKeyword != null && !serviceAddressKeyword.isBlank();
     }
 
     public boolean isValidBusinessTypes() {

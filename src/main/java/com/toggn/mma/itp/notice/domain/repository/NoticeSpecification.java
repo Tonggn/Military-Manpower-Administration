@@ -29,4 +29,8 @@ public class NoticeSpecification {
     public static Specification<Notice> businessTypesIn(final List<BusinessType> businessTypes) {
         return (root, query, builder) -> root.get("businessType").in(businessTypes);
     }
+
+    public static Specification<Notice> serviceAddressKeywordContains(final String serviceAddressKeyword) {
+        return (root, query, builder) -> builder.like(root.get("serviceAddress"), "%" + serviceAddressKeyword + "%");
+    }
 }
