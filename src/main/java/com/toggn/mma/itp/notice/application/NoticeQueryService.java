@@ -6,10 +6,8 @@ import com.toggn.mma.itp.notice.application.dto.NoticeFilterRequest;
 import com.toggn.mma.itp.notice.application.dto.NoticeResponse;
 import com.toggn.mma.itp.notice.domain.Notice;
 import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
-import com.toggn.mma.itp.notice.domain.repository.NoticeSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +27,12 @@ public class NoticeQueryService {
 
     public Page<NoticeResponse> findAllNotices(final int pageNum, final NoticeFilterRequest noticeFilterRequest) {
         final Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "noticeDate_createdDate", "createdAt"));
-        final Specification<Notice> specification = createFilterSpecification(noticeFilterRequest);
-        final Page<Notice> notices = noticeRepository.findAll(specification, pageable);
+        final Page<Notice> notices = noticeRepository.findByFiltering(noticeFilterRequest.keyword(),
+                noticeFilterRequest.serviceStatusType(),
+                noticeFilterRequest.agentType(),
+                noticeFilterRequest.serviceAddressKeyword(),
+                noticeFilterRequest.businessTypes(),
+                pageable);
 
         final Map<Long, Enterprise> enterpriseMap = getLongEnterpriseMap(notices);
 
@@ -39,28 +41,6 @@ public class NoticeQueryService {
                 .toList();
 
         return new PageImpl<>(noticeResponses, pageable, notices.getTotalElements());
-    }
-
-    private Specification<Notice> createFilterSpecification(final NoticeFilterRequest noticeFilterRequest) {
-        Specification<Notice> specification = Specification.where(null);
-
-        if (noticeFilterRequest.isValidKeyword()) {
-            specification = specification.and(NoticeSpecification.keywordContains(noticeFilterRequest.keyword()));
-        }
-        if (noticeFilterRequest.isValidServiceType()) {
-            specification = specification.and(NoticeSpecification.serviceStatusTypeEquals(noticeFilterRequest.serviceStatusType()));
-        }
-        if (noticeFilterRequest.isValidAgentType()) {
-            specification = specification.and(NoticeSpecification.agentTypeEquals(noticeFilterRequest.agentType()));
-        }
-        if (noticeFilterRequest.isValidServiceAddressKeyword()) {
-            specification = specification.and(NoticeSpecification.serviceAddressKeywordContains(noticeFilterRequest.serviceAddressKeyword()));
-        }
-        if (noticeFilterRequest.isValidBusinessTypes()) {
-            specification = specification.and(NoticeSpecification.businessTypesIn(noticeFilterRequest.businessTypes()));
-        }
-
-        return specification;
     }
 
     private Map<Long, Enterprise> getLongEnterpriseMap(final Page<Notice> notices) {
