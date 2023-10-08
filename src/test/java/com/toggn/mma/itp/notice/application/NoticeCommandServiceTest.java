@@ -6,8 +6,8 @@ import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.notice.domain.*;
 import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
 import com.toggn.mma.itp.notice.parser.dto.NoticeParseResponse;
-import com.toggn.mma.support.fixture.EnterpriseFixture;
-import com.toggn.mma.support.fixture.NoticeFixture;
+import com.toggn.mma.support.fixture.EnterpriseBuilder;
+import com.toggn.mma.support.fixture.NoticeBuilder;
 import com.toggn.mma.support.helper.SpringBootTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.toggn.mma.support.fixture.DocumentFixture.noticesDocument;
-import static com.toggn.mma.support.fixture.NoticeFixture.getNotice;
+import static com.toggn.mma.support.fixture.ParseResponseConverter.toNoticeParseResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -37,17 +37,9 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
 
     @BeforeEach
     void setUp() {
-        enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
+        enterprise = enterpriseRepository.save(new EnterpriseBuilder().build());
 
-        newNotice = getNotice(
-                enterprise,
-                SalaryType.TYPE_07,
-                ServiceStatusType.TYPE_002,
-                AgentType.TYPE_1,
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 2, 1)
-        );
+        newNotice = new NoticeBuilder(enterprise).build();
     }
 
     @Test
@@ -56,7 +48,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
         // given
         final Notice expect = newNotice;
 
-        final NoticeParseResponse noticeResponse = NoticeFixture.convertToNoticeParseResponse(expect, enterprise);
+        final NoticeParseResponse noticeResponse = toNoticeParseResponse(expect, enterprise);
         when(noticeClient.request()).thenReturn(noticesDocument(noticeResponse));
 
         // then
@@ -76,37 +68,19 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
     @DisplayName("updateAllNotices(): 공고의 생성일이 빠른 것 부터 저장한다.")
     void 빠른_생성일순_저장_테스트() {
         // given
-        final Notice notice_1월_1일 = getNotice(
-                enterprise,
-                SalaryType.TYPE_07,
-                ServiceStatusType.TYPE_002,
-                AgentType.TYPE_1,
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 2, 1)
-        );
-        final Notice notice_1월_2일 = getNotice(
-                enterprise,
-                SalaryType.TYPE_07,
-                ServiceStatusType.TYPE_002,
-                AgentType.TYPE_1,
-                LocalDate.of(2024, 1, 2),
-                LocalDate.of(2024, 1, 2),
-                LocalDate.of(2024, 2, 1)
-        );
-        final Notice notice_1월_3일 = getNotice(
-                enterprise,
-                SalaryType.TYPE_07,
-                ServiceStatusType.TYPE_002,
-                AgentType.TYPE_1,
-                LocalDate.of(2024, 1, 3),
-                LocalDate.of(2024, 1, 3),
-                LocalDate.of(2024, 2, 1)
-        );
+        final Notice notice_1월_1일 = new NoticeBuilder(enterprise)
+                .setCreateDate(LocalDate.of(2024, 1, 1))
+                .build();
+        final Notice notice_1월_2일 = new NoticeBuilder(enterprise)
+                .setCreateDate(LocalDate.of(2024, 1, 2))
+                .build();
+        final Notice notice_1월_3일 = new NoticeBuilder(enterprise)
+                .setCreateDate(LocalDate.of(2024, 1, 3))
+                .build();
 
-        final NoticeParseResponse noticeResponse1 = NoticeFixture.convertToNoticeParseResponse(notice_1월_1일, enterprise);
-        final NoticeParseResponse noticeResponse2 = NoticeFixture.convertToNoticeParseResponse(notice_1월_2일, enterprise);
-        final NoticeParseResponse noticeResponse3 = NoticeFixture.convertToNoticeParseResponse(notice_1월_3일, enterprise);
+        final NoticeParseResponse noticeResponse1 = toNoticeParseResponse(notice_1월_1일, enterprise);
+        final NoticeParseResponse noticeResponse2 = toNoticeParseResponse(notice_1월_2일, enterprise);
+        final NoticeParseResponse noticeResponse3 = toNoticeParseResponse(notice_1월_3일, enterprise);
 
         when(noticeClient.request()).thenReturn(noticesDocument(noticeResponse2, noticeResponse3, noticeResponse1));
 
@@ -135,17 +109,9 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
                 "존재하지 않는 주소"
         );
 
-        final Notice notice = getNotice(
-                존재하지_않는_업체,
-                SalaryType.TYPE_07,
-                ServiceStatusType.TYPE_002,
-                AgentType.TYPE_1,
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 2, 1)
-        );
+        final Notice notice = new NoticeBuilder(존재하지_않는_업체).build();
 
-        final NoticeParseResponse noticeResponse = NoticeFixture.convertToNoticeParseResponse(notice, 존재하지_않는_업체);
+        final NoticeParseResponse noticeResponse = toNoticeParseResponse(notice, 존재하지_않는_업체);
 
         when(noticeClient.request()).thenReturn(noticesDocument(noticeResponse));
 
@@ -164,7 +130,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
 
         noticeRepository.save(expect);
 
-        final NoticeParseResponse noticeResponse = NoticeFixture.convertToNoticeParseResponse(expect, enterprise);
+        final NoticeParseResponse noticeResponse = toNoticeParseResponse(expect, enterprise);
         when(noticeClient.request()).thenReturn(noticesDocument(noticeResponse));
 
         // when
@@ -207,7 +173,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
                 )
         );
 
-        final NoticeParseResponse noticeResponse = NoticeFixture.convertToNoticeParseResponse(updatedNotice, enterprise);
+        final NoticeParseResponse noticeResponse = toNoticeParseResponse(updatedNotice, enterprise);
         when(noticeClient.request()).thenReturn(noticesDocument(noticeResponse));
 
         // when
@@ -230,7 +196,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
         // given
         final Notice savedNotice = noticeRepository.save(newNotice);
 
-        final NoticeParseResponse noticeResponse = NoticeFixture.convertToNoticeParseResponse(savedNotice, enterprise);
+        final NoticeParseResponse noticeResponse = toNoticeParseResponse(savedNotice, enterprise);
         when(noticeClient.request()).thenReturn(noticesDocument(noticeResponse));
 
         // then

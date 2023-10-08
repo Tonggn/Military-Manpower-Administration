@@ -7,8 +7,9 @@ import com.toggn.mma.itp.notice.application.dto.NoticeFilterRequest;
 import com.toggn.mma.itp.notice.application.dto.NoticeResponse;
 import com.toggn.mma.itp.notice.domain.*;
 import com.toggn.mma.itp.notice.domain.repository.NoticeRepository;
-import com.toggn.mma.support.fixture.EnterpriseFixture;
-import com.toggn.mma.support.fixture.NoticeFixture;
+import com.toggn.mma.support.fixture.EnterpriseBuilder;
+import com.toggn.mma.support.fixture.NoticeBuilder;
+import com.toggn.mma.support.fixture.NoticeFilterRequestBuilder;
 import com.toggn.mma.support.helper.SpringBootTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class NoticeQueryServiceTest extends SpringBootTestHelper {
 
+    private static final int FIRST_PAGE_NUM = 0;
     @Autowired
     private NoticeQueryService noticeQueryService;
     @Autowired
@@ -40,11 +42,11 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
     @Autowired
     private EnterpriseRepository enterpriseRepository;
 
-    private NoticeFilterRequest nothingFilterRequest;
+    private NoticeFilterRequestBuilder noticeFilterRequestBuilder;
 
     @BeforeEach
     void setUp() {
-        nothingFilterRequest = new NoticeFilterRequest(null, null, null, null, null);
+        this.noticeFilterRequestBuilder = new NoticeFilterRequestBuilder();
     }
 
     @Nested
@@ -55,27 +57,22 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
         @BeforeEach
         void setUp() {
-            enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
+            final EnterpriseBuilder enterpriseBuilder = new EnterpriseBuilder();
+            enterprise = enterpriseRepository.save(enterpriseBuilder.build());
         }
 
         @Test
         @DisplayName("한 페이지에 20개의 공고만 보여준다.")
         void 페이징_테스트() {
             // given
-            final List<Notice> notices = IntStream.range(0, 25).mapToObj(i -> NoticeFixture.getNotice(
-                            enterprise,
-                            SalaryType.TYPE_08,
-                            ServiceStatusType.TYPE_002,
-                            AgentType.TYPE_1,
-                            LocalDate.of(2024, 1, 1),
-                            LocalDate.of(2024, 1, 1),
-                            LocalDate.of(2024, 2, 1)
-                    ))
+            final List<Notice> notices = IntStream.range(FIRST_PAGE_NUM, 25)
+                    .mapToObj(i -> new NoticeBuilder(enterprise).build())
                     .toList();
             noticeRepository.saveAll(notices);
 
             // when
-            final Page<NoticeResponse> actual = noticeQueryService.findAllNotices(0, nothingFilterRequest);
+            final NoticeFilterRequest noticeFilterRequest = noticeFilterRequestBuilder.build();
+            final Page<NoticeResponse> actual = noticeQueryService.findAllNotices(FIRST_PAGE_NUM, noticeFilterRequest);
 
             // then
             assertThat(actual.getContent()).hasSize(20);
@@ -85,15 +82,10 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("모든 공고를 최근 생성일 순으로 조회한다.")
         void 모든_공고_조회_테스트() {
             // given
-            final List<Notice> notices = IntStream.range(1, 10).mapToObj(i -> NoticeFixture.getNotice(
-                            enterprise,
-                            SalaryType.TYPE_08,
-                            ServiceStatusType.TYPE_002,
-                            AgentType.TYPE_1,
-                            LocalDate.of(2024, 1, i),
-                            LocalDate.of(2024, 1, i),
-                            LocalDate.of(2024, 2, 1)
-                    ))
+            final List<Notice> notices = IntStream.range(1, 10)
+                    .mapToObj(i -> new NoticeBuilder(enterprise)
+                            .setCreateDate(LocalDate.of(2024, 1, i))
+                            .build())
                     .toList();
             noticeRepository.saveAll(notices);
 
@@ -103,7 +95,10 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                     .toList();
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, nothingFilterRequest).getContent();
+            final NoticeFilterRequest noticeFilterRequest = noticeFilterRequestBuilder.build();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, noticeFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -115,15 +110,8 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("공고의 생성일이 같을 경우 최근 DB 추가 일시 순으로 조회한다.")
         void 동일한_생성일_공고_조회_테스트() {
             // given
-            final List<Notice> notices = IntStream.range(1, 10).mapToObj(i -> NoticeFixture.getNotice(
-                            enterprise,
-                            SalaryType.TYPE_08,
-                            ServiceStatusType.TYPE_002,
-                            AgentType.TYPE_1,
-                            LocalDate.of(2024, 1, 1),
-                            LocalDate.of(2024, 1, 1),
-                            LocalDate.of(2024, 2, 1)
-                    ))
+            final List<Notice> notices = IntStream.range(1, 10)
+                    .mapToObj(i -> new NoticeBuilder(enterprise).build())
                     .toList();
             noticeRepository.saveAll(notices);
 
@@ -133,7 +121,10 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                     .toList();
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, nothingFilterRequest).getContent();
+            final NoticeFilterRequest noticeFilterRequest = noticeFilterRequestBuilder.build();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, noticeFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -155,8 +146,8 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @BeforeEach
         void setUp() {
             keyword = "키워드";
-            keywordEnterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
-            nonKeywordEnterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_2);
+            keywordEnterprise = enterpriseRepository.save(new EnterpriseBuilder().build());
+            nonKeywordEnterprise = enterpriseRepository.save(new EnterpriseBuilder().build());
 
             keywordNotice = noticeRepository.save(
                     new Notice(
@@ -181,17 +172,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
             );
             noticeRepository.save(keywordNotice);
 
-            nonKeywordNotice = noticeRepository.save(
-                    NoticeFixture.getNotice(
-                            nonKeywordEnterprise,
-                            SalaryType.TYPE_08,
-                            ServiceStatusType.TYPE_002,
-                            AgentType.TYPE_1,
-                            LocalDate.of(2024, 1, 1),
-                            LocalDate.of(2024, 1, 1),
-                            LocalDate.of(2024, 2, 1)
-                    )
-            );
+            nonKeywordNotice = noticeRepository.save(new NoticeBuilder(nonKeywordEnterprise).build());
             noticeRepository.save(nonKeywordNotice);
         }
 
@@ -201,13 +182,16 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
             // given
             final String keyword = "키워드";
 
-            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null, null, null);
-
+            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequestBuilder()
+                    .setKeyword(keyword)
+                    .build();
 
             final List<NoticeResponse> expect = List.of(NoticeResponse.from(keywordNotice, keywordEnterprise));
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, keywordFilterRequest).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, keywordFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -221,7 +205,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("키워드가 없으면 모든 공고를 조회한다.")
         void 빈_키워드_필터링_테스트(final String keyword) {
             // given
-            final NoticeFilterRequest keywordFilterRequest = new NoticeFilterRequest(keyword, null, null, null, null);
+            final NoticeFilterRequest keywordFilterRequest = noticeFilterRequestBuilder
+                    .setKeyword(keyword)
+                    .build();
 
             final List<NoticeResponse> expect = List.of(
                     NoticeResponse.from(nonKeywordNotice, nonKeywordEnterprise),
@@ -229,7 +215,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
             );
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, keywordFilterRequest).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, keywordFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -255,19 +243,12 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
         @BeforeEach
         void setUp() {
-            enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
+            enterprise = enterpriseRepository.save(new EnterpriseBuilder().build());
 
             notices = Arrays.stream(ServiceStatusType.values())
-                    .map(serviceStatusType -> NoticeFixture.getNotice(
-                                    enterprise,
-                                    SalaryType.TYPE_08,
-                                    serviceStatusType,
-                                    AgentType.TYPE_1,
-                                    LocalDate.of(2024, 1, 1),
-                                    LocalDate.of(2024, 1, 1),
-                                    LocalDate.of(2024, 2, 1)
-                            )
-                    )
+                    .map(serviceStatusType -> new NoticeBuilder(enterprise)
+                            .setServiceStatusType(serviceStatusType)
+                            .build())
                     .toList();
             noticeRepository.saveAll(notices);
         }
@@ -277,7 +258,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("역종에 해당하는 공고만 조회한다.")
         void 유효_역종_필터링_테스트(final ServiceStatusType serviceStatusType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null, null, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = noticeFilterRequestBuilder
+                    .setServiceStatusType(serviceStatusType)
+                    .build();
 
             final List<NoticeResponse> expect = notices.stream()
                     .filter(notice -> notice.getServiceStatusType().equals(serviceStatusType))
@@ -285,7 +268,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                     .toList();
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceStatusFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -298,7 +283,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("유효하지 않은 역종일 경우 모든 역종의 공고를 조회한다.")
         void 유효하지_않은_역종_필터링_테스트(final ServiceStatusType serviceStatusType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, serviceStatusType, null, null, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = noticeFilterRequestBuilder
+                    .setServiceStatusType(serviceStatusType)
+                    .build();
 
             final List<NoticeResponse> expect = notices.stream()
                     .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
@@ -307,7 +294,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceStatusFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -333,19 +322,12 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
         @BeforeEach
         void setUp() {
-            enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
+            enterprise = enterpriseRepository.save(new EnterpriseBuilder().build());
 
             notices = Arrays.stream(AgentType.values())
-                    .map(agentType -> NoticeFixture.getNotice(
-                                    enterprise,
-                                    SalaryType.TYPE_08,
-                                    ServiceStatusType.TYPE_002,
-                                    agentType,
-                                    LocalDate.of(2024, 1, 1),
-                                    LocalDate.of(2024, 1, 1),
-                                    LocalDate.of(2024, 2, 1)
-                            )
-                    )
+                    .map(agentType -> new NoticeBuilder(enterprise)
+                            .setAgentType(agentType)
+                            .build())
                     .toList();
             noticeRepository.saveAll(notices);
         }
@@ -355,7 +337,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("요원 분류에 해당하는 공고만 조회한다.")
         void 유효_요원_필터링_테스트(final AgentType agentType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType, null, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = noticeFilterRequestBuilder
+                    .setAgentType(agentType)
+                    .build();
 
             final List<NoticeResponse> expect = notices.stream()
                     .filter(notice -> notice.getAgentType().equals(agentType))
@@ -363,7 +347,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                     .toList();
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceStatusFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -376,7 +362,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("유효하지 않은 요원 분류일 경우 모든 역종의 공고를 조회한다.")
         void 유효하지_않은_요원_필터링_테스트(final AgentType agentType) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, agentType, null, null);
+            final NoticeFilterRequest serviceStatusFilterRequest = noticeFilterRequestBuilder
+                    .setAgentType(agentType)
+                    .build();
 
             final List<NoticeResponse> expect = notices.stream()
                     .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
@@ -385,7 +373,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceStatusFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -424,19 +414,12 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
 
         @BeforeEach
         void setUp() {
-            enterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
+            enterprise = enterpriseRepository.save(new EnterpriseBuilder().build());
 
             notices = Arrays.stream(BusinessType.values())
-                    .map(businessType -> NoticeFixture.getNotice(
-                                    enterprise,
-                                    SalaryType.TYPE_08,
-                                    ServiceStatusType.TYPE_002,
-                                    AgentType.TYPE_1,
-                                    LocalDate.of(2024, 1, 1),
-                                    LocalDate.of(2024, 1, 1),
-                                    LocalDate.of(2024, 2, 1)
-                            )
-                    )
+                    .map(businessType -> new NoticeBuilder(enterprise)
+                            .setBusinessType(businessType)
+                            .build())
                     .toList();
             noticeRepository.saveAll(notices);
         }
@@ -446,7 +429,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("선택된 업종에 해당하는 공고만 조회한다.")
         void 유효_업종_필터링_테스트(final List<BusinessType> businessTypes) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, null, null, businessTypes);
+            final NoticeFilterRequest serviceStatusFilterRequest = noticeFilterRequestBuilder
+                    .setBusinessTypes(businessTypes)
+                    .build();
 
             final List<NoticeResponse> expect = notices.stream()
                     .filter(notice -> businessTypes.contains(notice.getBusinessType()))
@@ -455,7 +440,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                     .toList();
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceStatusFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -468,17 +455,21 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("유효하지 않은 업종일 경우 모든 역종의 공고를 조회한다.")
         void 유효하지_않은_업종_필터링_테스트(final List<BusinessType> businessTypes) {
             // given
-            final NoticeFilterRequest serviceStatusFilterRequest = new NoticeFilterRequest(null, null, null, null, businessTypes);
+            final NoticeFilterRequest serviceStatusFilterRequest = noticeFilterRequestBuilder
+                    .setBusinessTypes(businessTypes)
+                    .build();
 
             final List<NoticeResponse> expect = notices.stream()
                     .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
                     .map(notice -> NoticeResponse.from(notice, enterprise))
                     .toList()
-                    .subList(0, 20);
+                    .subList(FIRST_PAGE_NUM, 20);
 
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceStatusFilterRequest).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceStatusFilterRequest)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -500,8 +491,8 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @BeforeEach
         void setUp() {
             keyword = "키워드";
-            keywordEnterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_1);
-            nonKeywordEnterprise = enterpriseRepository.save(EnterpriseFixture.ENTERPRISE_2);
+            keywordEnterprise = enterpriseRepository.save(new EnterpriseBuilder().build());
+            nonKeywordEnterprise = enterpriseRepository.save(new EnterpriseBuilder().build());
 
             keywordNotice = noticeRepository.save(
                     new Notice(
@@ -526,17 +517,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
             );
             noticeRepository.save(keywordNotice);
 
-            nonKeywordNotice = noticeRepository.save(
-                    NoticeFixture.getNotice(
-                            nonKeywordEnterprise,
-                            SalaryType.TYPE_08,
-                            ServiceStatusType.TYPE_002,
-                            AgentType.TYPE_1,
-                            LocalDate.of(2024, 1, 1),
-                            LocalDate.of(2024, 1, 1),
-                            LocalDate.of(2024, 2, 1)
-                    )
-            );
+            nonKeywordNotice = noticeRepository.save(new NoticeBuilder(nonKeywordEnterprise).build());
             noticeRepository.save(nonKeywordNotice);
         }
 
@@ -546,12 +527,16 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
             // given
             final String keyword = "키워드";
 
-            final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequest(null, null, null, keyword, null);
+            final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequestBuilder()
+                    .setServiceAddressKeyword(keyword)
+                    .build();
 
             final List<NoticeResponse> expect = List.of(NoticeResponse.from(keywordNotice, keywordEnterprise));
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceAddressFilter).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceAddressFilter)
+                    .getContent();
 
             // then
             assertThat(actual)
@@ -565,7 +550,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("유효하지 않은 키워드 입력시 모든 공고를 조회한다.")
         void 근무지_유효하지_않은_키워드_검색_테스트(final String keyword) {
             // given
-            final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequest(null, null, null, keyword, null);
+            final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequestBuilder()
+                    .setServiceAddressKeyword(keyword)
+                    .build();
 
             final List<NoticeResponse> expect = List.of(
                     NoticeResponse.from(nonKeywordNotice, nonKeywordEnterprise),
@@ -573,7 +560,9 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
             );
 
             // when
-            final List<NoticeResponse> actual = noticeQueryService.findAllNotices(0, serviceAddressFilter).getContent();
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceAddressFilter)
+                    .getContent();
 
             // then
             assertThat(actual)
