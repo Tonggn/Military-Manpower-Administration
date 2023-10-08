@@ -4,7 +4,7 @@ import com.toggn.mma.itp.enterprise.domain.BusinessType;
 import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import com.toggn.mma.itp.enterprise.domain.repository.EnterpriseRepository;
 import com.toggn.mma.itp.enterprise.parser.dto.EnterpriseParseResponse;
-import com.toggn.mma.support.fixture.EnterpriseFixture;
+import com.toggn.mma.support.fixture.EnterpriseBuilder;
 import com.toggn.mma.support.helper.SpringBootTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static com.toggn.mma.support.fixture.DocumentFixture.enterprisesDocument;
-import static com.toggn.mma.support.fixture.EnterpriseFixture.convertToEnterpriseParseResponse;
+import static com.toggn.mma.support.fixture.ParseResponseConverter.toEnterpriseParseResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -29,14 +29,14 @@ class EnterpriseCommandServiceTest extends SpringBootTestHelper {
 
     @BeforeEach
     void setUp() {
-        enterprise = EnterpriseFixture.ENTERPRISE_1;
+        enterprise = new EnterpriseBuilder().build();
     }
 
     @Test
     @DisplayName("updateAllEnterprises(): 새로운 기업의 정보를 저장한다.")
     void 새로운_기업_정보_저장_테스트() {
         // given
-        final EnterpriseParseResponse enterpriseResponse = convertToEnterpriseParseResponse(enterprise);
+        final EnterpriseParseResponse enterpriseResponse = toEnterpriseParseResponse(enterprise);
 
         when(enterpriseClient.request()).thenReturn(enterprisesDocument(enterpriseResponse));
 
