@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -52,6 +53,10 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
         return new PageImpl<>(notices, pageable, totalCount);
     }
 
+    private BooleanExpression titleContains(final String title) {
+        return StringUtils.hasText(title) ? notice.title.contains(title) : null;
+    }
+
     private BooleanExpression serviceStatusTypeEq(final ServiceStatusType serviceStatusType) {
         return serviceStatusType != null && serviceStatusType.isValid()
                 ? notice.serviceStatusType.eq(serviceStatusType) : null;
@@ -62,14 +67,10 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
     }
 
     private BooleanExpression serviceAddressContains(final String serviceAddress) {
-        return serviceAddress != null ? notice.serviceAddress.contains(serviceAddress) : null;
+        return StringUtils.hasText(serviceAddress) ? notice.serviceAddress.contains(serviceAddress) : null;
     }
 
     private BooleanExpression businessTypeIn(final List<BusinessType> businessTypes) {
         return businessTypes != null && !businessTypes.isEmpty() ? notice.businessType.in(businessTypes) : null;
-    }
-
-    private BooleanExpression titleContains(final String title) {
-        return title != null ? notice.title.contains(title) : null;
     }
 }

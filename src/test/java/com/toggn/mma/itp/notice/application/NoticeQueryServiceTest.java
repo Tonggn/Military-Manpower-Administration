@@ -407,6 +407,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         static Stream<List<BusinessType>> 유효하지_않은_업종_필터링_테스트() {
             return Stream.of(
                     Collections.emptyList(),
+                    List.of(BusinessType.TYPE_UNLISTED),
                     null
             );
         }
