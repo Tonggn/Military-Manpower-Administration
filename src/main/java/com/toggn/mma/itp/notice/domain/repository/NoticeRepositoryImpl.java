@@ -36,6 +36,9 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                         agentTypeEq(agentType),
                         serviceAddressContains(serviceAddress),
                         businessTypeIn(businessTypes))
+                .leftJoin(notice.enterprise)
+                .fetchJoin()
+                .distinct()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(notice.noticeDate.createdDate.desc(), notice.createdAt.desc())
