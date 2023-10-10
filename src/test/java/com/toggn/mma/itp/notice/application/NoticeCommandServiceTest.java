@@ -60,7 +60,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
         final Notice actual = noticeRepository.findAll().get(0);
         assertThat(actual)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "createdAt", "updatedAt")
+                .ignoringFields("id", "enterprise", "createdAt", "updatedAt")
                 .isEqualTo(expect);
     }
 
@@ -94,7 +94,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
 
         assertThat(actual)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "createdAt", "updatedAt")
+                .ignoringFields("id", "enterprise", "createdAt", "updatedAt")
                 .isEqualTo(List.of(notice_1월_1일, notice_1월_2일, notice_1월_3일));
     }
 
@@ -142,7 +142,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
         final Notice actual = noticeRepository.findAll().get(0);
         assertThat(actual)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "createdAt", "updatedAt")
+                .ignoringFields("id", "enterprise", "createdAt", "updatedAt")
                 .isEqualTo(expect);
 
     }
@@ -164,7 +164,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
                 "업데이트된 경력구분",
                 ServiceStatusType.TYPE_006,
                 AgentType.TYPE_2,
-                savedNotice.getEnterpriseId(),
+                savedNotice.getEnterprise(),
                 savedNotice.getNoticeNumber(),
                 new NoticeDate(
                         LocalDate.of(2024, 1, 1),
@@ -185,7 +185,7 @@ class NoticeCommandServiceTest extends SpringBootTestHelper {
         final Notice actual = noticeRepository.findAll().get(0);
         assertThat(actual)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "createdAt", "updatedAt")
+                .ignoringFields("id", "enterprise", "createdAt", "updatedAt")
                 .isEqualTo(updatedNotice);
         assertThat(actual.getCreatedAt().isBefore(actual.getUpdatedAt())).isTrue();
     }

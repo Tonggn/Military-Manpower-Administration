@@ -26,7 +26,7 @@ public class NoticeBuilder {
                 "경력 구분" + noticeCount,
                 ServiceStatusType.TYPE_002,
                 AgentType.TYPE_1,
-                enterprise.getId(),
+                enterprise,
                 noticeCount * 1111,
                 new NoticeDate(
                         LocalDate.of(2024, 1, 1),
@@ -48,7 +48,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -67,7 +67,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -86,7 +86,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -105,7 +105,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -124,7 +124,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -143,7 +143,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -162,7 +162,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -181,7 +181,7 @@ public class NoticeBuilder {
                 experienceDivision,
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -200,7 +200,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 serviceStatusType,
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -219,14 +219,14 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 agentType,
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
         return this;
     }
 
-    public NoticeBuilder setEnterpriseId(final Long enterpriseId) {
+    public NoticeBuilder setEnterprise(final Enterprise enterprise) {
         this.notice = new Notice(
                 notice.getTitle(),
                 notice.getTask(),
@@ -238,7 +238,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                enterpriseId,
+                enterprise,
                 notice.getNoticeNumber(),
                 notice.getNoticeDate()
         );
@@ -257,7 +257,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 noticeNumber,
                 notice.getNoticeDate()
         );
@@ -276,7 +276,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 new NoticeDate(createDate, notice.getNoticeDate().getUpdatedDate(), notice.getNoticeDate().getDeadlineDate())
         );
@@ -295,7 +295,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 new NoticeDate(notice.getNoticeDate().getCreatedDate(), updateDate, notice.getNoticeDate().getDeadlineDate())
         );
@@ -314,7 +314,7 @@ public class NoticeBuilder {
                 notice.getExperienceDivision(),
                 notice.getServiceStatusType(),
                 notice.getAgentType(),
-                notice.getEnterpriseId(),
+                notice.getEnterprise(),
                 notice.getNoticeNumber(),
                 new NoticeDate(notice.getNoticeDate().getCreatedDate(), notice.getNoticeDate().getUpdatedDate(), deadlineDate)
         );

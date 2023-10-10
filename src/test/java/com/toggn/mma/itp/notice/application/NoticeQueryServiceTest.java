@@ -161,7 +161,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                             "experienceDivision",
                             ServiceStatusType.TYPE_002,
                             AgentType.TYPE_1,
-                            keywordEnterprise.getId(),
+                            keywordEnterprise,
                             123L,
                             new NoticeDate(
                                     LocalDate.of(2024, 1, 1),
@@ -506,7 +506,7 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
                             "experienceDivision",
                             ServiceStatusType.TYPE_002,
                             AgentType.TYPE_1,
-                            keywordEnterprise.getId(),
+                            keywordEnterprise,
                             123L,
                             new NoticeDate(
                                     LocalDate.of(2024, 1, 1),
