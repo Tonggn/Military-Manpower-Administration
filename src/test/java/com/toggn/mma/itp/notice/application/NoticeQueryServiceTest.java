@@ -525,8 +525,6 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
         @DisplayName("근무지에 키워드가 포함된 공고만 조회한다.")
         void 근무지_유효_키워드_검색_테스트() {
             // given
-            final String keyword = "키워드";
-
             final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequestBuilder()
                     .setServiceAddressKeyword(keyword)
                     .build();
@@ -552,6 +550,79 @@ class NoticeQueryServiceTest extends SpringBootTestHelper {
             // given
             final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequestBuilder()
                     .setServiceAddressKeyword(keyword)
+                    .build();
+
+            final List<NoticeResponse> expect = List.of(
+                    NoticeResponse.from(nonKeywordNotice, nonKeywordEnterprise),
+                    NoticeResponse.from(keywordNotice, keywordEnterprise)
+            );
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceAddressFilter)
+                    .getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+    }
+
+    @Nested
+    @DisplayName("findAllNotices(): 업체명 검색 테스트")
+    class 업체명_검색_테스트 {
+
+        private String keyword;
+        private Notice keywordNotice;
+        private Notice nonKeywordNotice;
+        private Enterprise keywordEnterprise;
+        private Enterprise nonKeywordEnterprise;
+
+        @BeforeEach
+        void setUp() {
+            keyword = "키워드";
+            keywordEnterprise = enterpriseRepository.save(new EnterpriseBuilder()
+                    .setName("prefix" + keyword + "suffix")
+                    .build());
+            nonKeywordEnterprise = enterpriseRepository.save(new EnterpriseBuilder().build());
+
+            keywordNotice = noticeRepository.save(new NoticeBuilder(keywordEnterprise).build());
+            noticeRepository.save(keywordNotice);
+
+            nonKeywordNotice = noticeRepository.save(new NoticeBuilder(nonKeywordEnterprise).build());
+            noticeRepository.save(nonKeywordNotice);
+        }
+
+        @Test
+        @DisplayName("업체명에 키워드가 포함된 공고만 조회한다.")
+        void 업체명_유효_키워드_검색_테스트() {
+            // given
+            final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequestBuilder()
+                    .setEnterpriseNameKeyword(keyword)
+                    .build();
+
+            final List<NoticeResponse> expect = List.of(NoticeResponse.from(keywordNotice, keywordEnterprise));
+
+            // when
+            final List<NoticeResponse> actual = noticeQueryService
+                    .findAllNotices(FIRST_PAGE_NUM, serviceAddressFilter)
+                    .getContent();
+
+            // then
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @EmptySource
+        @DisplayName("유효하지 않은 키워드 입력시 모든 공고를 조회한다.")
+        void 업체명_유효하지_않은_키워드_검색_테스트(final String keyword) {
+            // given
+            final NoticeFilterRequest serviceAddressFilter = new NoticeFilterRequestBuilder()
+                    .setEnterpriseNameKeyword(keyword)
                     .build();
 
             final List<NoticeResponse> expect = List.of(

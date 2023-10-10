@@ -26,6 +26,7 @@ public class NoticeQueryService {
                 noticeFilterRequest.serviceStatusType(),
                 noticeFilterRequest.agentType(),
                 noticeFilterRequest.serviceAddressKeyword(),
+                noticeFilterRequest.enterpriseNameKeyword(),
                 noticeFilterRequest.businessTypes(),
                 pageable);
 

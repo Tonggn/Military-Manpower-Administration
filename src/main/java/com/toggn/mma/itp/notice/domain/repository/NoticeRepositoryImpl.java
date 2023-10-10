@@ -27,6 +27,7 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
             final ServiceStatusType serviceStatusType,
             final AgentType agentType,
             final String serviceAddress,
+            final String enterpriseName,
             final List<BusinessType> businessTypes,
             final Pageable pageable
     ) {
@@ -35,6 +36,7 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                         serviceStatusTypeEq(serviceStatusType),
                         agentTypeEq(agentType),
                         serviceAddressContains(serviceAddress),
+                        enterpriseNameContains(enterpriseName),
                         businessTypeIn(businessTypes))
                 .leftJoin(notice.enterprise)
                 .fetchJoin()
@@ -50,6 +52,7 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                         serviceStatusTypeEq(serviceStatusType),
                         agentTypeEq(agentType),
                         serviceAddressContains(serviceAddress),
+                        enterpriseNameContains(enterpriseName),
                         businessTypeIn(businessTypes))
                 .fetchOne();
 
@@ -71,6 +74,10 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
 
     private BooleanExpression serviceAddressContains(final String serviceAddress) {
         return StringUtils.hasText(serviceAddress) ? notice.serviceAddress.contains(serviceAddress) : null;
+    }
+
+    private BooleanExpression enterpriseNameContains(final String enterpriseName) {
+        return StringUtils.hasText(enterpriseName) ? notice.enterprise.name.contains(enterpriseName) : null;
     }
 
     private BooleanExpression businessTypeIn(final List<BusinessType> businessTypes) {
