@@ -70,8 +70,8 @@
         <tr>
             <th scope="row">업종선택</th>
             <td colspan="5">
-                <div class="collapse" id="collapseBusinessType">
-                    <small class="form-check form-check-inline" style="width: 160px"
+                <div style="height: 250px; overflow: scroll">
+                    <small class="form-check form-check-inline" style="width: 180px"
                            th:each="businessType:${businessTypes}">
                         <input class="form-check-input" name="businessType"
                                th:checked="${noticeFilterRequest.businessTypes != null && noticeFilterRequest.businessTypes.contains(businessType)}"
@@ -86,11 +86,6 @@
         </tbody>
     </table>
     <p class="text-end">
-        <a aria-controls="collapseBusinessType" aria-expanded="false" class="btn btn-secondary"
-           data-bs-toggle="collapse"
-           href="#collapseBusinessType" role="button">
-            업종 필터 펼치기
-        </a>
         <button class="btn btn-primary" id="searchButton" type="button">검색</button>
     </p>
 
