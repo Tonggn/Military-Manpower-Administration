@@ -182,59 +182,40 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        document.getElementById("searchButton").addEventListener("click", function () {
+        function buildQueryString() {
             const keyword = document.getElementById("keyword").value;
+
             const serviceStatusType = document.getElementById("serviceStatusType").value;
             const agentType = document.getElementById("agentType").value;
+
             const serviceAddressKeyword = document.getElementById("serviceAddressKeyword").value;
             const enterpriseNameKeyword = document.getElementById("enterpriseNameKeyword").value;
+
             const selectedBusinessTypes = [];
             document.querySelectorAll('input[name="businessType"]:checked')
                 .forEach(function (checkbox) {
                     selectedBusinessTypes.push(checkbox.value);
                 });
 
-            let queryString = "?";
-            queryString += "keyword=" + keyword + "&";
-            queryString += "serviceStatusType=" + serviceStatusType + "&";
-            queryString += "agentType=" + agentType + "&";
-            queryString += "serviceAddressKeyword=" + serviceAddressKeyword + "&";
-            queryString += "enterpriseNameKeyword=" + enterpriseNameKeyword + "&";
-            queryString += "businessTypes=" + selectedBusinessTypes.join(",");
+            return `?keyword=${keyword}&serviceStatusType=${serviceStatusType}&agentType=${agentType}&serviceAddressKeyword=${serviceAddressKeyword}&enterpriseNameKeyword=${enterpriseNameKeyword}&businessTypes=${selectedBusinessTypes.join(",")}`;
+        }
 
-            if (queryString !== "?") {
-                window.location.href = window.location.pathname + queryString;
-            }
+        function redirectToQueryString(queryString) {
+            window.location.href = window.location.pathname + queryString;
+        }
+
+        document.getElementById("searchButton").addEventListener("click", () => {
+            const queryString = buildQueryString();
+            redirectToQueryString(queryString);
         });
 
         const page_elements = document.getElementsByClassName("page-link");
-        Array.from(page_elements).forEach(function (element) {
-            element.addEventListener('click', function () {
+        Array.from(page_elements).forEach((element) => {
+            element.addEventListener('click', () => {
                 const page = element.getAttribute('value');
-                const keyword = document.getElementById("keyword").value;
-                const serviceStatusType = document.getElementById("serviceStatusType").value;
-                const agentType = document.getElementById("agentType").value;
-                const serviceAddressKeyword = document.getElementById("serviceAddressKeyword").value;
-                const enterpriseNameKeyword = document.getElementById("enterpriseNameKeyword").value;
-                const selectedBusinessTypes = [];
-                document.querySelectorAll('input[name="businessType"]:checked')
-                    .forEach(function (checkbox) {
-                        selectedBusinessTypes.push(checkbox.value);
-                    });
-
-                let queryString = "?";
-                queryString += "page=" + page + "&";
-                queryString += "keyword=" + keyword + "&";
-                queryString += "serviceStatusType=" + serviceStatusType + "&";
-                queryString += "agentType=" + agentType + "&";
-                queryString += "serviceAddressKeyword=" + serviceAddressKeyword + "&";
-                queryString += "enterpriseNameKeyword=" + enterpriseNameKeyword + "&";
-                queryString += "businessTypes=" + selectedBusinessTypes.join(",");
-
-                if (queryString !== "?") {
-                    window.location.href = window.location.pathname + queryString;
-                }
-            })
+                const queryString = buildQueryString() + `&page=${page}`;
+                redirectToQueryString(queryString);
+            });
         })
     });
 </script>
