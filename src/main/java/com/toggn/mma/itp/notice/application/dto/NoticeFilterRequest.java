@@ -13,6 +13,7 @@ public record NoticeFilterRequest(
         @RequestParam(value = "serviceStatusType", defaultValue = "") ServiceStatusType serviceStatusType,
         @RequestParam(value = "agentType", defaultValue = "") AgentType agentType,
         @RequestParam(value = "serviceAddressKeyword", defaultValue = "") String serviceAddressKeyword,
+        @RequestParam(value = "enterpriseNameKeyword", defaultValue = "") String enterpriseNameKeyword,
         @RequestParam(value = "businessTypes", defaultValue = "") List<BusinessType> businessTypes
 ) {
 
