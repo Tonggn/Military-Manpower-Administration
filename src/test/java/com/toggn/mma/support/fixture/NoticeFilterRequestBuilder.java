@@ -12,31 +12,85 @@ public class NoticeFilterRequestBuilder {
     private NoticeFilterRequest noticeFilterRequest;
 
     public NoticeFilterRequestBuilder() {
-        noticeFilterRequest = new NoticeFilterRequest(null, null, null, null, null);
+        noticeFilterRequest = new NoticeFilterRequest(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     public NoticeFilterRequestBuilder setKeyword(final String keyword) {
-        noticeFilterRequest = new NoticeFilterRequest(keyword, noticeFilterRequest.serviceStatusType(), noticeFilterRequest.agentType(), noticeFilterRequest.serviceAddressKeyword(), noticeFilterRequest.businessTypes());
+        noticeFilterRequest = new NoticeFilterRequest(
+                keyword,
+                noticeFilterRequest.serviceStatusType(),
+                noticeFilterRequest.agentType(),
+                noticeFilterRequest.serviceAddressKeyword(),
+                noticeFilterRequest.enterpriseNameKeyword(),
+                noticeFilterRequest.businessTypes()
+        );
         return this;
     }
 
     public NoticeFilterRequestBuilder setServiceStatusType(final ServiceStatusType serviceStatusType) {
-        noticeFilterRequest = new NoticeFilterRequest(noticeFilterRequest.keyword(), serviceStatusType, noticeFilterRequest.agentType(), noticeFilterRequest.serviceAddressKeyword(), noticeFilterRequest.businessTypes());
+        noticeFilterRequest = new NoticeFilterRequest(
+                noticeFilterRequest.keyword(),
+                serviceStatusType,
+                noticeFilterRequest.agentType(),
+                noticeFilterRequest.serviceAddressKeyword(),
+                noticeFilterRequest.enterpriseNameKeyword(),
+                noticeFilterRequest.businessTypes()
+        );
         return this;
     }
 
     public NoticeFilterRequestBuilder setAgentType(final AgentType agentType) {
-        noticeFilterRequest = new NoticeFilterRequest(noticeFilterRequest.keyword(), noticeFilterRequest.serviceStatusType(), agentType, noticeFilterRequest.serviceAddressKeyword(), noticeFilterRequest.businessTypes());
+        noticeFilterRequest = new NoticeFilterRequest(
+                noticeFilterRequest.keyword(),
+                noticeFilterRequest.serviceStatusType(),
+                agentType,
+                noticeFilterRequest.serviceAddressKeyword(),
+                noticeFilterRequest.enterpriseNameKeyword(),
+                noticeFilterRequest.businessTypes()
+        );
         return this;
     }
 
     public NoticeFilterRequestBuilder setServiceAddressKeyword(final String serviceAddressKeyword) {
-        noticeFilterRequest = new NoticeFilterRequest(noticeFilterRequest.keyword(), noticeFilterRequest.serviceStatusType(), noticeFilterRequest.agentType(), serviceAddressKeyword, noticeFilterRequest.businessTypes());
+        noticeFilterRequest = new NoticeFilterRequest(
+                noticeFilterRequest.keyword(),
+                noticeFilterRequest.serviceStatusType(),
+                noticeFilterRequest.agentType(),
+                serviceAddressKeyword,
+                noticeFilterRequest.enterpriseNameKeyword(),
+                noticeFilterRequest.businessTypes()
+        );
+        return this;
+    }
+
+    public NoticeFilterRequestBuilder setEnterpriseNameKeyword(final String enterpriseNameKeyword) {
+        noticeFilterRequest = new NoticeFilterRequest(
+                noticeFilterRequest.keyword(),
+                noticeFilterRequest.serviceStatusType(),
+                noticeFilterRequest.agentType(),
+                noticeFilterRequest.serviceAddressKeyword(),
+                enterpriseNameKeyword,
+                noticeFilterRequest.businessTypes()
+        );
         return this;
     }
 
     public NoticeFilterRequestBuilder setBusinessTypes(final List<BusinessType> businessTypes) {
-        noticeFilterRequest = new NoticeFilterRequest(noticeFilterRequest.keyword(), noticeFilterRequest.serviceStatusType(), noticeFilterRequest.agentType(), noticeFilterRequest.serviceAddressKeyword(), businessTypes);
+        noticeFilterRequest = new NoticeFilterRequest(
+                noticeFilterRequest.keyword(),
+                noticeFilterRequest.serviceStatusType(),
+                noticeFilterRequest.agentType(),
+                noticeFilterRequest.serviceAddressKeyword(),
+                noticeFilterRequest.enterpriseNameKeyword(),
+                businessTypes
+        );
         return this;
     }
 

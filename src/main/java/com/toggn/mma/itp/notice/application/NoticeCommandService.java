@@ -62,8 +62,8 @@ public class NoticeCommandService {
         final List<String> enterpriseNames = noticeParseResponses.stream()
                 .map(NoticeParseResponse::enterpriseName)
                 .toList();
-        final Map<String, Long> enterpriseNameIdMap = enterpriseRepository.findAllByNameIn(enterpriseNames).stream()
-                .collect(Collectors.toMap(Enterprise::getName, Enterprise::getId));
+        final Map<String, Enterprise> enterpriseNameIdMap = enterpriseRepository.findAllByNameIn(enterpriseNames).stream()
+                .collect(Collectors.toMap(Enterprise::getName, enterprise -> enterprise));
 
         return noticeParseResponses.stream()
                 .filter(response -> enterpriseNameIdMap.containsKey(response.enterpriseName()))
@@ -71,7 +71,7 @@ public class NoticeCommandService {
                 .toList();
     }
 
-    private Notice convertToNoticeEntity(final NoticeParseResponse response, final Long enterpriseId) {
+    private Notice convertToNoticeEntity(final NoticeParseResponse response, final Enterprise enterprise) {
         final String title = response.title();
         final String task = response.task();
         final BusinessType business = BusinessType.from(response.businessTypeCode());
@@ -87,7 +87,7 @@ public class NoticeCommandService {
                 response.deadlineDate());
 
         return new Notice(title, task, business, welfare, salary, serviceAddress, highestEducationLevel,
-                experienceDivision, serviceStatus, agent, enterpriseId, noticeNumber, noticeDate);
+                experienceDivision, serviceStatus, agent, enterprise, noticeNumber, noticeDate);
     }
 
     private void saveUpdatedNotices(final List<Notice> notices, final List<Notice> savedNotices) {

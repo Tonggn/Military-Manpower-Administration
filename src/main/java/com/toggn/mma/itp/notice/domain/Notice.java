@@ -2,6 +2,7 @@ package com.toggn.mma.itp.notice.domain;
 
 import com.toggn.mma.base.BaseDatetimeEntity;
 import com.toggn.mma.itp.enterprise.domain.BusinessType;
+import com.toggn.mma.itp.enterprise.domain.Enterprise;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -50,8 +51,9 @@ public class Notice extends BaseDatetimeEntity {
     @Column(name = "agent_type", length = 20, nullable = false)
     private AgentType agentType;
 
-    @Column(nullable = false)
-    private Long enterpriseId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "enterprise_id", nullable = false)
+    private Enterprise enterprise;
 
     @Column(nullable = false, unique = true)
     private Long noticeNumber;
@@ -70,7 +72,7 @@ public class Notice extends BaseDatetimeEntity {
             final String experienceDivision,
             final ServiceStatusType serviceStatusType,
             final AgentType agentType,
-            final Long enterpriseId,
+            final Enterprise enterprise,
             final Long noticeNumber,
             final NoticeDate noticeDate
     ) {
@@ -84,7 +86,7 @@ public class Notice extends BaseDatetimeEntity {
         this.experienceDivision = experienceDivision;
         this.serviceStatusType = serviceStatusType;
         this.agentType = agentType;
-        this.enterpriseId = enterpriseId;
+        this.enterprise = enterprise;
         this.noticeNumber = noticeNumber;
         this.noticeDate = noticeDate;
     }

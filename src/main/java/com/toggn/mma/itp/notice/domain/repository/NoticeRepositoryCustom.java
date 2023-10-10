@@ -16,6 +16,7 @@ public interface NoticeRepositoryCustom {
             ServiceStatusType serviceStatusType,
             AgentType agentType,
             String serviceAddress,
+            String enterpriseName,
             List<BusinessType> businessTypes,
             Pageable pageable
     );

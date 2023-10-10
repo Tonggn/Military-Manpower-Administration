@@ -56,10 +56,15 @@
             </td>
         </tr>
         <tr>
-            <th scope="row" style="width: 15%">근무지 검색</th>
-            <td colspan="5" style="width: 85%">
+            <th scope="row">근무지 검색</th>
+            <td colspan="2">
                 <input class="form-control" id="serviceAddressKeyword" placeholder="검색어를 입력하세요"
                        th:value="${noticeFilterRequest.serviceAddressKeyword()}" type="text">
+            </td>
+            <th scope="row">업체명 검색</th>
+            <td colspan="2">
+                <input class="form-control" id="enterpriseNameKeyword" placeholder="검색어를 입력하세요"
+                       th:value="${noticeFilterRequest.enterpriseNameKeyword()}" type="text">
             </td>
         </tr>
         <tr>
@@ -182,6 +187,7 @@
             const serviceStatusType = document.getElementById("serviceStatusType").value;
             const agentType = document.getElementById("agentType").value;
             const serviceAddressKeyword = document.getElementById("serviceAddressKeyword").value;
+            const enterpriseNameKeyword = document.getElementById("enterpriseNameKeyword").value;
             const selectedBusinessTypes = [];
             document.querySelectorAll('input[name="businessType"]:checked')
                 .forEach(function (checkbox) {
@@ -193,6 +199,7 @@
             queryString += "serviceStatusType=" + serviceStatusType + "&";
             queryString += "agentType=" + agentType + "&";
             queryString += "serviceAddressKeyword=" + serviceAddressKeyword + "&";
+            queryString += "enterpriseNameKeyword=" + enterpriseNameKeyword + "&";
             queryString += "businessTypes=" + selectedBusinessTypes.join(",");
 
             if (queryString !== "?") {
@@ -208,6 +215,7 @@
                 const serviceStatusType = document.getElementById("serviceStatusType").value;
                 const agentType = document.getElementById("agentType").value;
                 const serviceAddressKeyword = document.getElementById("serviceAddressKeyword").value;
+                const enterpriseNameKeyword = document.getElementById("enterpriseNameKeyword").value;
                 const selectedBusinessTypes = [];
                 document.querySelectorAll('input[name="businessType"]:checked')
                     .forEach(function (checkbox) {
@@ -220,6 +228,7 @@
                 queryString += "serviceStatusType=" + serviceStatusType + "&";
                 queryString += "agentType=" + agentType + "&";
                 queryString += "serviceAddressKeyword=" + serviceAddressKeyword + "&";
+                queryString += "enterpriseNameKeyword=" + enterpriseNameKeyword + "&";
                 queryString += "businessTypes=" + selectedBusinessTypes.join(",");
 
                 if (queryString !== "?") {
