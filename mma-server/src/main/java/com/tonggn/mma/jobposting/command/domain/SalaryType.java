@@ -1,5 +1,6 @@
 package com.tonggn.mma.jobposting.command.domain;
 
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -23,7 +24,14 @@ public enum SalaryType {
   CODE_30("30", 2_800, 3_000),
   NONE("00", 0, 0);
 
-    private final String code;
-    private final int minSalary;
-    private final int maxSalary;
+  private final String code;
+  private final int minSalary;
+  private final int maxSalary;
+
+  public static SalaryType of(final String code) {
+    return Arrays.stream(values())
+        .filter(value -> value.code.equals(code))
+        .findFirst()
+        .orElse(NONE);
+  }
 }

@@ -1,5 +1,6 @@
 package com.tonggn.mma.jobposting.command.domain;
 
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -11,4 +12,11 @@ public enum ServiceStatusType {
 
   private final String code;
   private final String name;
+
+  public static ServiceStatusType of(final String code) {
+    return Arrays.stream(values())
+        .filter(value -> value.code.equals(code))
+        .findFirst()
+        .orElse(NONE);
+  }
 }

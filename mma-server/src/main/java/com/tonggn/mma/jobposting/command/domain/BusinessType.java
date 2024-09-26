@@ -1,5 +1,6 @@
 package com.tonggn.mma.jobposting.command.domain;
 
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
@@ -132,4 +133,11 @@ public enum BusinessType {
 
   private final List<String> code;
   private final String name;
+
+  public static BusinessType of(final String code) {
+    return Arrays.stream(values())
+        .filter(value -> value.code.contains(code))
+        .findFirst()
+        .orElse(NONE);
+  }
 }

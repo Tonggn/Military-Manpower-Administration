@@ -10,3 +10,6 @@ spring:
       ddl-auto: validate
   flyway:
     enabled: true
+
+mma:
+  api-url: ${API_URL}
