@@ -88,4 +88,53 @@ public class JobPosting {
   private LocalDateTime createdAt;
   @LastModifiedDate
   private LocalDateTime updatedAt;
+
+  public JobPosting(final String companyName, final String postingNumber, final String title,
+      final String task, final String welfare, final String workAddress, final String areaCode,
+      final String minEducation, final BusinessType businessType, final String experienceYears,
+      final String experienceDivision, final SalaryType salaryType,
+      final ServiceStatusType serviceStatusType, final AgentType agentType, final Boolean available,
+      final String businessRegistrationNumber, final LocalDate publishedDate,
+      final LocalDate closingDate, final LocalDate modifiedDate) {
+    this.companyName = companyName;
+    this.postingNumber = postingNumber;
+    this.title = title;
+    this.task = task;
+    this.welfare = welfare;
+    this.workAddress = workAddress;
+    this.areaCode = areaCode;
+    this.minEducation = minEducation;
+    this.businessType = businessType;
+    this.experienceYears = experienceYears;
+    this.experienceDivision = experienceDivision;
+    this.salaryType = salaryType;
+    this.serviceStatusType = serviceStatusType;
+    this.agentType = agentType;
+    this.available = available;
+    this.businessRegistrationNumber = businessRegistrationNumber;
+    this.publishedDate = publishedDate;
+    this.closingDate = closingDate;
+    this.modifiedDate = modifiedDate;
+  }
+
+  public void update(final JobPosting newPosting) {
+    this.companyName = newPosting.getCompanyName();
+    this.title = newPosting.getTitle();
+    this.task = newPosting.getTask();
+    this.welfare = newPosting.getWelfare();
+    this.workAddress = newPosting.getWorkAddress();
+    this.areaCode = newPosting.getAreaCode();
+    this.minEducation = newPosting.getMinEducation();
+    this.businessType = newPosting.getBusinessType();
+    this.experienceYears = newPosting.getExperienceYears();
+    this.experienceDivision = newPosting.getExperienceDivision();
+    this.salaryType = newPosting.getSalaryType();
+    this.serviceStatusType = newPosting.getServiceStatusType();
+    this.agentType = newPosting.getAgentType();
+    this.available = newPosting.getAvailable();
+    this.businessRegistrationNumber = newPosting.getBusinessRegistrationNumber();
+    this.publishedDate = newPosting.getPublishedDate();
+    this.closingDate = newPosting.getClosingDate();
+    this.modifiedDate = newPosting.getModifiedDate();
+  }
 }
