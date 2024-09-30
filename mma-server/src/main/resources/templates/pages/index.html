@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ko" layout:decorate="~{layout}">
+<head>
+  <title>병역일터 채용공고</title>
+</head>
+<body>
+<div class="container-lg my-5" layout:fragment="content">
+  <!-- 채용공고 검색 및 필터링 -->
+  <table class="table table-bordered align-middle">
+    <tbody>
+    <tr>
+      <th scope="row" style="width: 15%">제목</th>
+      <td colspan="5" style="width: 85%">
+        <input class="form-control" id="keyword" placeholder="검색어를 입력하세요" type="text" value="">
+      </td>
+    </tr>
+    <tr>
+      <th scope="row"><label for="serviceStatusType">역종</label></th>
+      <td colspan="2">
+        <select class="form-select" id="serviceStatusType" name="serviceStatusType">
+          <option value="">=선택=</option>
+          <option value="002">보충역</option>
+          <option value="006">현역</option>
+        </select>
+      </td>
+      <th scope="row"><label for="agentType">요원</label></th>
+      <td colspan="2">
+        <select class="form-select" id="agentType" name="agentType">
+          <option value="">=선택=</option>
+          <option value="1">산업기능요원</option>
+          <option value="2">전문연구요원</option>
+          <option value="3">승선근무예비역</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">근무지</th>
+      <td colspan="2">
+        <input class="form-control" id="serviceAddressKeyword" placeholder="검색어를 입력하세요" type="text"
+               value="">
+      </td>
+      <th scope="row">업체명</th>
+      <td colspan="2">
+        <input class="form-control" id="companyNameKeyword" placeholder="검색어를 입력하세요" type="text"
+               value="">
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">업종선택</th>
+      <td colspan="5">
+        <div id="businessTypes" style="height: 250px; overflow: scroll">
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- search button -->
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button class="btn btn-primary" onclick="search()" type="button">검색</button>
+  </div>
+
+  <!-- 채용공고 목록 -->
+  <div id="job-postings">
+  </div>
+
+  <div id="loading-spinner" style="display: none; text-align: center; margin: 20px 0;">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div id="no-more-postings" style="display: none; text-align: center; margin: 20px 0;">
+    더 이상 공고가 없습니다.
+  </div>
+</div>
+
+<th:block layout:fragment="script">
+  <script>
+    let currentPage = 1;
+    let isLoading = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchPostings();
+      fetchBusinessTypes();
+      window.addEventListener('scroll', handleScroll);
+    });
+
+    function fetchBusinessTypes() {
+      fetch(`/api/jobposting/business-types`)
+      .then(response => response.json())
+      .then(businessTypes => {
+        const fragment = document.createDocumentFragment();
+        businessTypes.forEach(businessType => {
+          const type = document.createElement('small');
+          type.classList.add('form-check', 'form-check-inline');
+          type.style.width = '150px';
+
+          const input = document.createElement('input');
+          input.classList.add('form-check-input');
+          input.name = 'businessType';
+          input.id = `businessType${businessType.code}`;
+          input.value = businessType.code;
+          input.type = 'checkbox';
+
+          const label = document.createElement('label');
+          label.classList.add('form-check-label');
+          label.htmlFor = `businessType${businessType.code}`;
+          label.textContent = businessType.name;
+
+          type.appendChild(input);
+          type.appendChild(label);
+          fragment.appendChild(type);
+        });
+        document.getElementById('businessTypes').appendChild(fragment);
+        currentPage++;
+      });
+    }
+
+    function search() {
+      currentPage = 1;
+      isLoading = false;
+      document.getElementById('job-postings').innerHTML = '';
+      fetchPostings();
+    }
+
+    function fetchPostings() {
+      if (isLoading) {
+        return;
+      }
+      isLoading = true;
+      const spinner = document.getElementById('loading-spinner');
+      spinner.style.display = 'block';
+
+      fetch(getPostingRequestUrl())
+      .then(response => response.json())
+      .then(postings => {
+        if (postings.length === 0) {
+          isLoading = true;
+          spinner.style.display = 'none';
+          document.getElementById('no-more-postings').style.display = 'block';
+          return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        postings.forEach(posting => {
+          const table = document.createElement('table');
+          table.classList.add('table', 'table-hover', 'table-striped-columns',
+              'table-group-divider', 'align-middle', 'my-3');
+          table.innerHTML = `
+            <tbody>
+              <tr>
+                <th scope="row" style="width: 15%">채용공고</th>
+                <td style="width: 35%">
+                  <a target="_blank" href="https://work.mma.go.kr/caisBYIS/search/cygonggogeomsaekView.do?cygonggo_no=${posting.postingNumber}">${posting.title}</a>
+                </td>
+                <th scope="row" style="width: 15%">등록일 / 마감일</th>
+                <td style="width: 35%">${posting.publishedDate} / ${posting.closingDate}</td>
+              </tr>
+              <tr>
+                <th scope="row" style="width: 15%">업체명</th>
+                <td style="width: 35%">${posting.companyName}</td>
+                <th scope="row" style="width: 15%">업종</th>
+                <td style="width: 35%">${posting.businessTypeName}</td>
+              </tr>
+              <tr>
+                <th scope="row" style="width: 15%">담당업무</th>
+                <td style="width: 35%">${posting.task}</td>
+                <th scope="row" style="width: 15%">급여조건</th>
+                <td style="width: 35%">${posting.minSalary} ~ ${posting.maxSalary}</td>
+              </tr>
+              <tr>
+                <th scope="row" style="width: 15%">고용형태</th>
+                <td style="width: 35%">${posting.serviceStatusTypeName}</td>
+                <th scope="row" style="width: 15%">요원형태</th>
+                <td style="width: 35%">${posting.agentTypeName}</td>
+              </tr>
+              <tr>
+                <th scope="row" style="width: 15%">최종학력</th>
+                <td style="width: 35%">${posting.minEducation}</td>
+                <th scope="row" style="width: 15%">경력구분</th>
+                <td style="width: 35%">${posting.experienceDivision}
+                  ${posting.experienceYears || ''}</td>
+              </tr>
+              <tr>
+                <th scope="row" style="width: 15%">근무지</th>
+                <td colspan="3" style="width: 85%">${posting.workAddress}</td>
+              </tr>
+              <tr>
+                <th scope="row" style="width: 15%">복리후생</th>
+                <td colspan="3" style="width: 85%">${posting.welfare}</td>
+              </tr>
+            </tbody>
+          `;
+          fragment.appendChild(table);
+        });
+        document.getElementById('job-postings').appendChild(fragment);
+        currentPage++;
+        isLoading = false;
+        spinner.style.display = 'none';
+      })
+    }
+
+    function getPostingRequestUrl() {
+      let url = `/api/jobposting?page=${currentPage}`;
+      const keyword = document.getElementById('keyword').value;
+      if (keyword) {
+        url += `&keyword=${keyword}`;
+      }
+      const serviceStatusType = document.getElementById('serviceStatusType').value;
+      if (serviceStatusType) {
+        url += `&serviceStatusType=${serviceStatusType}`;
+      }
+      const agentType = document.getElementById('agentType').value;
+      if (agentType) {
+        url += `&agentType=${agentType}`;
+      }
+      const serviceAddressKeyword = document.getElementById('serviceAddressKeyword').value;
+      if (serviceAddressKeyword) {
+        url += `&serviceAddressKeyword=${serviceAddressKeyword}`;
+      }
+      const companyNameKeyword = document.getElementById('companyNameKeyword').value;
+      if (companyNameKeyword) {
+        url += `&companyNameKeyword=${companyNameKeyword}`;
+      }
+      const businessTypes = document.querySelectorAll('input[name="businessType"]:checked');
+      if (businessTypes.length > 0) {
+        url += `&businessTypes=${Array.from(businessTypes).map(
+            businessType => businessType.value).join(',')}`;
+      }
+      return url;
+    }
+
+    function handleScroll() {
+      if (window.scrollY + window.innerHeight >= document.body.clientHeight) {
+        fetchPostings();
+      }
+    }
+  </script>
+</th:block>
+</body>
+</html>

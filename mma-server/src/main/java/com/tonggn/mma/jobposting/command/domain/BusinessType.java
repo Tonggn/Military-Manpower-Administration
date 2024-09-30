@@ -2,8 +2,10 @@ package com.tonggn.mma.jobposting.command.domain;
 
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum BusinessType {
   // 11101, 철강
@@ -129,7 +131,7 @@ public enum BusinessType {
       "21402", "21501", "21502", "21503", "21504", "21505", "21601", "22101", "23101", "23201",
       "23202", "24101", "25101", "26101"), "연구기관"),
 
-  NONE(List.of(), "미기재");
+  NONE(List.of("00000"), "미기재");
 
   private final List<String> code;
   private final String name;

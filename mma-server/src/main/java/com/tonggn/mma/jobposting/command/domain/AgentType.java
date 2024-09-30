@@ -1,8 +1,10 @@
 package com.tonggn.mma.jobposting.command.domain;
 
 import java.util.Arrays;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum AgentType {
   SKILLED_INDUSTRIAL_PERSONNEL("1", "산업기능요원"),

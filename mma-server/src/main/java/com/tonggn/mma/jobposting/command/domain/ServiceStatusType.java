@@ -1,8 +1,10 @@
 package com.tonggn.mma.jobposting.command.domain;
 
 import java.util.Arrays;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum ServiceStatusType {
   REPLACEMENT_STATUS("002", "보충역"),
